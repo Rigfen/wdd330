@@ -1,5 +1,5 @@
-import type { MapSource as MapSourceType } from './source-map-tree';
-import type { SourceMapInput, SourceMapLoader } from './types';
+import type { MapSource as MapSourceType } from "./source-map-tree";
+import type { SourceMapInput, SourceMapLoader } from "./types";
 /**
  * Recursively builds a tree structure out of sourcemap files, with each node
  * being either an `OriginalSource` "leaf" or a `SourceMapTree` composed of
@@ -11,4 +11,7 @@ import type { SourceMapInput, SourceMapLoader } from './types';
  * does not have an associated sourcemap, it is considered an original,
  * unmodified source file.
  */
-export default function buildSourceMapTree(input: SourceMapInput | SourceMapInput[], loader: SourceMapLoader): MapSourceType;
+export default function buildSourceMapTree(
+  input: SourceMapInput | SourceMapInput[],
+  loader: SourceMapLoader,
+): MapSourceType;

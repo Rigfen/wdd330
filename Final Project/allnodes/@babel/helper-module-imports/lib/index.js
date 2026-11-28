@@ -1,13 +1,13 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 Object.defineProperty(exports, "ImportInjector", {
   enumerable: true,
   get: function () {
     return _importInjector.default;
-  }
+  },
 });
 exports.addDefault = addDefault;
 exports.addNamed = addNamed;
@@ -17,7 +17,7 @@ Object.defineProperty(exports, "isModule", {
   enumerable: true,
   get: function () {
     return _isModule.default;
-  }
+  },
 });
 var _importInjector = require("./import-injector.js");
 var _isModule = require("./is-module.js");

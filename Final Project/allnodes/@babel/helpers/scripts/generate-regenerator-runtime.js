@@ -4,19 +4,19 @@ import fs from "fs";
 import { createRequire } from "module";
 
 const [parse, generate] = await Promise.all([
-  import("@babel/parser").then(ns => ns.parse),
-  import("@babel/generator").then(ns => ns.default.default || ns.default),
-]).catch(error => {
+  import("@babel/parser").then((ns) => ns.parse),
+  import("@babel/generator").then((ns) => ns.default.default || ns.default),
+]).catch((error) => {
   console.error(error);
   throw new Error(
     "Before running generate-helpers.js you must compile @babel/parser and @babel/generator.",
-    { cause: error }
+    { cause: error },
   );
 });
 
 const REGENERATOR_RUNTIME_IN_FILE = fs.readFileSync(
   createRequire(import.meta.url).resolve("regenerator-runtime"),
-  "utf8"
+  "utf8",
 );
 
 const MIN_VERSION = "7.18.0";
@@ -45,7 +45,7 @@ export default function generateRegeneratorRuntimeHelper() {
       ${COPYRIGHT}
       _regeneratorRuntime = function () { return exports; };
       var exports = {};
-    `)
+    `),
   );
 
   const { code } = generate({

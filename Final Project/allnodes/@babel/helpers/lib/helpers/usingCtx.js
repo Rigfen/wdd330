@@ -1,26 +1,32 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _usingCtx;
 function _usingCtx() {
-  var _disposeSuppressedError = typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed) {
-      var err = new Error();
-      err.name = "SuppressedError";
-      err.suppressed = suppressed;
-      err.error = error;
-      return err;
-    },
+  var _disposeSuppressedError =
+      typeof SuppressedError === "function"
+        ? SuppressedError
+        : function (error, suppressed) {
+            var err = new Error();
+            err.name = "SuppressedError";
+            err.suppressed = suppressed;
+            err.error = error;
+            return err;
+          },
     empty = {},
     stack = [];
   function using(isAwait, value) {
     if (value != null) {
       if (Object(value) !== value) {
-        throw new TypeError("using declarations can only be used with objects, functions, null, or undefined.");
+        throw new TypeError(
+          "using declarations can only be used with objects, functions, null, or undefined.",
+        );
       }
       if (isAwait) {
-        var dispose = value[Symbol.asyncDispose || Symbol.for("Symbol.asyncDispose")];
+        var dispose =
+          value[Symbol.asyncDispose || Symbol.for("Symbol.asyncDispose")];
       }
       if (dispose == null) {
         dispose = value[Symbol.dispose || Symbol.for("Symbol.dispose")];
@@ -31,7 +37,7 @@ function _usingCtx() {
       stack.push({
         v: value,
         d: dispose,
-        a: isAwait
+        a: isAwait,
       });
     }
     return value;
@@ -43,7 +49,7 @@ function _usingCtx() {
     d: function () {
       var error = this.e;
       function next() {
-        while (resource = stack.pop()) {
+        while ((resource = stack.pop())) {
           try {
             var resource,
               disposalResult = resource.d.call(resource.v);
@@ -61,7 +67,7 @@ function _usingCtx() {
         return next();
       }
       return next();
-    }
+    },
   };
 }
 

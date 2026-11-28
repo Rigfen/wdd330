@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ArgumentPlaceholder = ArgumentPlaceholder;
 exports.ArrayPattern = exports.ArrayExpression = ArrayExpression;
@@ -25,13 +25,13 @@ exports.TopicReference = TopicReference;
 exports.TupleExpression = TupleExpression;
 var _t = require("@babel/types");
 var _jsesc = require("jsesc");
-const {
-  isAssignmentPattern,
-  isIdentifier
-} = _t;
+const { isAssignmentPattern, isIdentifier } = _t;
 function Identifier(node) {
   var _node$loc;
-  this.sourceIdentifierName(((_node$loc = node.loc) == null ? void 0 : _node$loc.identifierName) || node.name);
+  this.sourceIdentifierName(
+    ((_node$loc = node.loc) == null ? void 0 : _node$loc.identifierName) ||
+      node.name,
+  );
   this.word(node.name);
 }
 function ArgumentPlaceholder() {
@@ -48,7 +48,7 @@ function ObjectExpression(node) {
     this.space();
     this.printList(props, node, {
       indent: true,
-      statement: true
+      statement: true,
     });
     this.space();
   }
@@ -68,12 +68,21 @@ function ObjectProperty(node) {
     this.print(node.key, node);
     this.tokenChar(93);
   } else {
-    if (isAssignmentPattern(node.value) && isIdentifier(node.key) && node.key.name === node.value.left.name) {
+    if (
+      isAssignmentPattern(node.value) &&
+      isIdentifier(node.key) &&
+      node.key.name === node.value.left.name
+    ) {
       this.print(node.value, node);
       return;
     }
     this.print(node.key, node);
-    if (node.shorthand && isIdentifier(node.key) && isIdentifier(node.value) && node.key.name === node.value.name) {
+    if (
+      node.shorthand &&
+      isIdentifier(node.key) &&
+      isIdentifier(node.value) &&
+      node.key.name === node.value.name
+    ) {
       return;
     }
   }
@@ -104,8 +113,13 @@ function RecordExpression(node) {
   if (this.format.recordAndTupleSyntaxType === "bar") {
     startToken = "{|";
     endToken = "|}";
-  } else if (this.format.recordAndTupleSyntaxType !== "hash" && this.format.recordAndTupleSyntaxType != null) {
-    throw new Error(`The "recordAndTupleSyntaxType" generator option must be "bar" or "hash" (${JSON.stringify(this.format.recordAndTupleSyntaxType)} received).`);
+  } else if (
+    this.format.recordAndTupleSyntaxType !== "hash" &&
+    this.format.recordAndTupleSyntaxType != null
+  ) {
+    throw new Error(
+      `The "recordAndTupleSyntaxType" generator option must be "bar" or "hash" (${JSON.stringify(this.format.recordAndTupleSyntaxType)} received).`,
+    );
   } else {
     startToken = "#{";
     endToken = "}";
@@ -115,7 +129,7 @@ function RecordExpression(node) {
     this.space();
     this.printList(props, node, {
       indent: true,
-      statement: true
+      statement: true,
     });
     this.space();
   }
@@ -133,7 +147,9 @@ function TupleExpression(node) {
     startToken = "#[";
     endToken = "]";
   } else {
-    throw new Error(`${this.format.recordAndTupleSyntaxType} is not a valid recordAndTuple syntax type`);
+    throw new Error(
+      `${this.format.recordAndTupleSyntaxType} is not a valid recordAndTuple syntax type`,
+    );
   }
   this.token(startToken);
   for (let i = 0; i < elems.length; i++) {
@@ -197,15 +213,18 @@ function DecimalLiteral(node) {
 }
 const validTopicTokenSet = new Set(["^^", "@@", "^", "%", "#"]);
 function TopicReference() {
-  const {
-    topicToken
-  } = this.format;
+  const { topicToken } = this.format;
   if (validTopicTokenSet.has(topicToken)) {
     this.token(topicToken);
   } else {
     const givenTopicTokenJSON = JSON.stringify(topicToken);
-    const validTopics = Array.from(validTopicTokenSet, v => JSON.stringify(v));
-    throw new Error(`The "topicToken" generator option must be one of ` + `${validTopics.join(", ")} (${givenTopicTokenJSON} received instead).`);
+    const validTopics = Array.from(validTopicTokenSet, (v) =>
+      JSON.stringify(v),
+    );
+    throw new Error(
+      `The "topicToken" generator option must be one of ` +
+        `${validTopics.join(", ")} (${givenTopicTokenJSON} received instead).`,
+    );
   }
 }
 function PipelineTopicExpression(node) {

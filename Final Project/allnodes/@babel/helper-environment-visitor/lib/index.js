@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 exports.requeueComputedKeyAndDecorators = requeueComputedKeyAndDecorators;
@@ -14,10 +14,7 @@ exports.requeueComputedKeyAndDecorators = requeueComputedKeyAndDecorators;
   };
 }
 function requeueComputedKeyAndDecorators(path) {
-  const {
-    context,
-    node
-  } = path;
+  const { context, node } = path;
   if (node.computed) {
     context.maybeQueue(path.get("key"));
   }
@@ -44,7 +41,7 @@ const visitor = {
     }
     path.skip();
     requeueComputedKeyAndDecorators(path);
-  }
+  },
 };
 var _default = visitor;
 exports.default = _default;

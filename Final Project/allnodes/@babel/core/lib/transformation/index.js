@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.run = run;
 function _traverse() {
@@ -18,7 +18,12 @@ var _normalizeFile = require("./normalize-file.js");
 var _generate = require("./file/generate.js");
 var _deepArray = require("../config/helpers/deep-array.js");
 function* run(config, code, ast) {
-  const file = yield* (0, _normalizeFile.default)(config.passes, (0, _normalizeOpts.default)(config), code, ast);
+  const file = yield* (0, _normalizeFile.default)(
+    config.passes,
+    (0, _normalizeOpts.default)(config),
+    code,
+    ast,
+  );
   const opts = file.opts;
   try {
     yield* transformFile(file, config.passes);
@@ -33,10 +38,7 @@ function* run(config, code, ast) {
   let outputCode, outputMap;
   try {
     if (opts.code !== false) {
-      ({
-        outputCode,
-        outputMap
-      } = (0, _generate.default)(config.passes, file));
+      ({ outputCode, outputMap } = (0, _generate.default)(config.passes, file));
     }
   } catch (e) {
     var _opts$filename2;
@@ -53,7 +55,9 @@ function* run(config, code, ast) {
     code: outputCode === undefined ? null : outputCode,
     map: outputMap === undefined ? null : outputMap,
     sourceType: file.ast.program.sourceType,
-    externalDependencies: (0, _deepArray.flattenToSet)(config.externalDependencies)
+    externalDependencies: (0, _deepArray.flattenToSet)(
+      config.externalDependencies,
+    ),
   };
 }
 function* transformFile(file, pluginPasses) {
@@ -61,7 +65,9 @@ function* transformFile(file, pluginPasses) {
     const passPairs = [];
     const passes = [];
     const visitors = [];
-    for (const plugin of pluginPairs.concat([(0, _blockHoistPlugin.default)()])) {
+    for (const plugin of pluginPairs.concat([
+      (0, _blockHoistPlugin.default)(),
+    ])) {
       const pass = new _pluginPass.default(file, plugin.key, plugin.options);
       passPairs.push([plugin, pass]);
       passes.push(pass);
@@ -73,11 +79,20 @@ function* transformFile(file, pluginPasses) {
         const result = fn.call(pass, file);
         yield* [];
         if (isThenable(result)) {
-          throw new Error(`You appear to be using an plugin with an async .pre, ` + `which your current version of Babel does not support. ` + `If you're using a published plugin, you may need to upgrade ` + `your @babel/core version.`);
+          throw new Error(
+            `You appear to be using an plugin with an async .pre, ` +
+              `which your current version of Babel does not support. ` +
+              `If you're using a published plugin, you may need to upgrade ` +
+              `your @babel/core version.`,
+          );
         }
       }
     }
-    const visitor = _traverse().default.visitors.merge(visitors, passes, file.opts.wrapPluginVisitorMethod);
+    const visitor = _traverse().default.visitors.merge(
+      visitors,
+      passes,
+      file.opts.wrapPluginVisitorMethod,
+    );
     {
       (0, _traverse().default)(file.ast, visitor, file.scope);
     }
@@ -87,14 +102,24 @@ function* transformFile(file, pluginPasses) {
         const result = fn.call(pass, file);
         yield* [];
         if (isThenable(result)) {
-          throw new Error(`You appear to be using an plugin with an async .post, ` + `which your current version of Babel does not support. ` + `If you're using a published plugin, you may need to upgrade ` + `your @babel/core version.`);
+          throw new Error(
+            `You appear to be using an plugin with an async .post, ` +
+              `which your current version of Babel does not support. ` +
+              `If you're using a published plugin, you may need to upgrade ` +
+              `your @babel/core version.`,
+          );
         }
       }
     }
   }
 }
 function isThenable(val) {
-  return !!val && (typeof val === "object" || typeof val === "function") && !!val.then && typeof val.then === "function";
+  return (
+    !!val &&
+    (typeof val === "object" || typeof val === "function") &&
+    !!val.then &&
+    typeof val.then === "function"
+  );
 }
 0 && 0;
 

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ClassAccessorProperty = ClassAccessorProperty;
 exports.ClassBody = ClassBody;
@@ -13,12 +13,10 @@ exports.ClassProperty = ClassProperty;
 exports.StaticBlock = StaticBlock;
 exports._classMethodHead = _classMethodHead;
 var _t = require("@babel/types");
-const {
-  isExportDefaultDeclaration,
-  isExportNamedDeclaration
-} = _t;
+const { isExportDefaultDeclaration, isExportNamedDeclaration } = _t;
 function ClassDeclaration(node, parent) {
-  const inExport = isExportDefaultDeclaration(parent) || isExportNamedDeclaration(parent);
+  const inExport =
+    isExportDefaultDeclaration(parent) || isExportNamedDeclaration(parent);
   if (!inExport || !this._shouldPrintDecoratorsBeforeExport(parent)) {
     this.printJoin(node.decorators, node);
   }
@@ -59,7 +57,7 @@ function ClassBody(node) {
   } else {
     this.newline();
     this.printSequence(node.body, node, {
-      indent: true
+      indent: true,
     });
     if (!this.endsWith(10)) this.newline();
     this.rightBrace(node);
@@ -68,7 +66,11 @@ function ClassBody(node) {
 function ClassProperty(node) {
   var _node$key$loc;
   this.printJoin(node.decorators, node);
-  const endLine = (_node$key$loc = node.key.loc) == null || (_node$key$loc = _node$key$loc.end) == null ? void 0 : _node$key$loc.line;
+  const endLine =
+    (_node$key$loc = node.key.loc) == null ||
+    (_node$key$loc = _node$key$loc.end) == null
+      ? void 0
+      : _node$key$loc.line;
   if (endLine) this.catchUp(endLine);
   this.tsPrintClassMemberModifiers(node);
   if (node.computed) {
@@ -97,7 +99,11 @@ function ClassProperty(node) {
 function ClassAccessorProperty(node) {
   var _node$key$loc2;
   this.printJoin(node.decorators, node);
-  const endLine = (_node$key$loc2 = node.key.loc) == null || (_node$key$loc2 = _node$key$loc2.end) == null ? void 0 : _node$key$loc2.line;
+  const endLine =
+    (_node$key$loc2 = node.key.loc) == null ||
+    (_node$key$loc2 = _node$key$loc2.end) == null
+      ? void 0
+      : _node$key$loc2.line;
   if (endLine) this.catchUp(endLine);
   this.tsPrintClassMemberModifiers(node);
   this.word("accessor", true);
@@ -154,7 +160,11 @@ function ClassPrivateMethod(node) {
 function _classMethodHead(node) {
   var _node$key$loc3;
   this.printJoin(node.decorators, node);
-  const endLine = (_node$key$loc3 = node.key.loc) == null || (_node$key$loc3 = _node$key$loc3.end) == null ? void 0 : _node$key$loc3.line;
+  const endLine =
+    (_node$key$loc3 = node.key.loc) == null ||
+    (_node$key$loc3 = _node$key$loc3.end) == null
+      ? void 0
+      : _node$key$loc3.line;
   if (endLine) this.catchUp(endLine);
   this.tsPrintClassMemberModifiers(node);
   this._methodHead(node);
@@ -168,7 +178,7 @@ function StaticBlock(node) {
   } else {
     this.newline();
     this.printSequence(node.body, node, {
-      indent: true
+      indent: true,
     });
     this.rightBrace(node);
   }

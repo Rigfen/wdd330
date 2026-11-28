@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 var _templateLiterals = require("./template-literals.js");
 Object.keys(_templateLiterals).forEach(function (key) {
@@ -11,7 +11,7 @@ Object.keys(_templateLiterals).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _templateLiterals[key];
-    }
+    },
   });
 });
 var _expressions = require("./expressions.js");
@@ -22,7 +22,7 @@ Object.keys(_expressions).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _expressions[key];
-    }
+    },
   });
 });
 var _statements = require("./statements.js");
@@ -33,7 +33,7 @@ Object.keys(_statements).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _statements[key];
-    }
+    },
   });
 });
 var _classes = require("./classes.js");
@@ -44,7 +44,7 @@ Object.keys(_classes).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _classes[key];
-    }
+    },
   });
 });
 var _methods = require("./methods.js");
@@ -55,7 +55,7 @@ Object.keys(_methods).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _methods[key];
-    }
+    },
   });
 });
 var _modules = require("./modules.js");
@@ -66,7 +66,7 @@ Object.keys(_modules).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _modules[key];
-    }
+    },
   });
 });
 var _types = require("./types.js");
@@ -77,7 +77,7 @@ Object.keys(_types).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _types[key];
-    }
+    },
   });
 });
 var _flow = require("./flow.js");
@@ -88,7 +88,7 @@ Object.keys(_flow).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _flow[key];
-    }
+    },
   });
 });
 var _base = require("./base.js");
@@ -99,7 +99,7 @@ Object.keys(_base).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _base[key];
-    }
+    },
   });
 });
 var _jsx = require("./jsx.js");
@@ -110,7 +110,7 @@ Object.keys(_jsx).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _jsx[key];
-    }
+    },
   });
 });
 var _typescript = require("./typescript.js");
@@ -121,7 +121,7 @@ Object.keys(_typescript).forEach(function (key) {
     enumerable: true,
     get: function () {
       return _typescript[key];
-    }
+    },
   });
 });
 

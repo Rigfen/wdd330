@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _default;
 function deepClone(value, cache) {
@@ -12,7 +12,8 @@ function deepClone(value, cache) {
       cloned = new Array(value.length);
       cache.set(value, cloned);
       for (let i = 0; i < value.length; i++) {
-        cloned[i] = typeof value[i] !== "object" ? value[i] : deepClone(value[i], cache);
+        cloned[i] =
+          typeof value[i] !== "object" ? value[i] : deepClone(value[i], cache);
       }
     } else {
       cloned = {};
@@ -20,7 +21,10 @@ function deepClone(value, cache) {
       const keys = Object.keys(value);
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
-        cloned[key] = typeof value[key] !== "object" ? value[key] : deepClone(value[key], cache);
+        cloned[key] =
+          typeof value[key] !== "object"
+            ? value[key]
+            : deepClone(value[key], cache);
       }
     }
     return cloned;

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = splitExportDeclaration;
 var _t = require("@babel/types");
@@ -11,17 +11,24 @@ const {
   exportSpecifier,
   identifier,
   variableDeclaration,
-  variableDeclarator
+  variableDeclarator,
 } = _t;
 function splitExportDeclaration(exportDeclaration) {
-  if (!exportDeclaration.isExportDeclaration() || exportDeclaration.isExportAllDeclaration()) {
+  if (
+    !exportDeclaration.isExportDeclaration() ||
+    exportDeclaration.isExportAllDeclaration()
+  ) {
     throw new Error("Only default and named export declarations can be split.");
   }
   if (exportDeclaration.isExportDefaultDeclaration()) {
     const declaration = exportDeclaration.get("declaration");
-    const standaloneDeclaration = declaration.isFunctionDeclaration() || declaration.isClassDeclaration();
-    const exportExpr = declaration.isFunctionExpression() || declaration.isClassExpression();
-    const scope = declaration.isScope() ? declaration.scope.parent : declaration.scope;
+    const standaloneDeclaration =
+      declaration.isFunctionDeclaration() || declaration.isClassDeclaration();
+    const exportExpr =
+      declaration.isFunctionExpression() || declaration.isClassExpression();
+    const scope = declaration.isScope()
+      ? declaration.scope.parent
+      : declaration.scope;
     let id = declaration.node.id;
     let needBindingRegistration = false;
     if (!id) {
@@ -34,8 +41,14 @@ function splitExportDeclaration(exportDeclaration) {
       needBindingRegistration = true;
       id = scope.generateUidIdentifier(id.name);
     }
-    const updatedDeclaration = standaloneDeclaration ? declaration.node : variableDeclaration("var", [variableDeclarator(cloneNode(id), declaration.node)]);
-    const updatedExportDeclaration = exportNamedDeclaration(null, [exportSpecifier(cloneNode(id), identifier("default"))]);
+    const updatedDeclaration = standaloneDeclaration
+      ? declaration.node
+      : variableDeclaration("var", [
+          variableDeclarator(cloneNode(id), declaration.node),
+        ]);
+    const updatedExportDeclaration = exportNamedDeclaration(null, [
+      exportSpecifier(cloneNode(id), identifier("default")),
+    ]);
     exportDeclaration.insertAfter(updatedExportDeclaration);
     exportDeclaration.replaceWith(updatedDeclaration);
     if (needBindingRegistration) {
@@ -47,7 +60,7 @@ function splitExportDeclaration(exportDeclaration) {
   }
   const declaration = exportDeclaration.get("declaration");
   const bindingIdentifiers = declaration.getOuterBindingIdentifiers();
-  const specifiers = Object.keys(bindingIdentifiers).map(name => {
+  const specifiers = Object.keys(bindingIdentifiers).map((name) => {
     return exportSpecifier(identifier(name), identifier(name));
   });
   const aliasDeclar = exportNamedDeclaration(null, specifiers);

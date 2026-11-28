@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.stat = exports.readFile = void 0;
 function _fs() {
@@ -18,14 +18,14 @@ function _gensync() {
   };
   return data;
 }
-const readFile = exports.readFile = _gensync()({
+const readFile = (exports.readFile = _gensync()({
   sync: _fs().readFileSync,
-  errback: _fs().readFile
-});
-const stat = exports.stat = _gensync()({
+  errback: _fs().readFile,
+}));
+const stat = (exports.stat = _gensync()({
   sync: _fs().statSync,
-  errback: _fs().stat
-});
+  errback: _fs().stat,
+}));
 0 && 0;
 
 //# sourceMappingURL=fs.js.map

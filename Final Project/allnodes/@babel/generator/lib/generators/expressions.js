@@ -1,9 +1,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
-exports.LogicalExpression = exports.BinaryExpression = exports.AssignmentExpression = AssignmentExpression;
+exports.LogicalExpression =
+  exports.BinaryExpression =
+  exports.AssignmentExpression =
+    AssignmentExpression;
 exports.AssignmentPattern = AssignmentPattern;
 exports.AwaitExpression = AwaitExpression;
 exports.BindExpression = BindExpression;
@@ -32,17 +35,15 @@ exports.YieldExpression = YieldExpression;
 exports._shouldPrintDecoratorsBeforeExport = _shouldPrintDecoratorsBeforeExport;
 var _t = require("@babel/types");
 var n = require("../node/index.js");
-const {
-  isCallExpression,
-  isLiteral,
-  isMemberExpression,
-  isNewExpression
-} = _t;
+const { isCallExpression, isLiteral, isMemberExpression, isNewExpression } = _t;
 function UnaryExpression(node) {
-  const {
-    operator
-  } = node;
-  if (operator === "void" || operator === "delete" || operator === "typeof" || operator === "throw") {
+  const { operator } = node;
+  if (
+    operator === "void" ||
+    operator === "delete" ||
+    operator === "typeof" ||
+    operator === "throw"
+  ) {
     this.word(operator);
     this.space();
   } else {
@@ -88,9 +89,16 @@ function NewExpression(node, parent) {
   this.word("new");
   this.space();
   this.print(node.callee, node);
-  if (this.format.minified && node.arguments.length === 0 && !node.optional && !isCallExpression(parent, {
-    callee: node
-  }) && !isMemberExpression(parent) && !isNewExpression(parent)) {
+  if (
+    this.format.minified &&
+    node.arguments.length === 0 &&
+    !node.optional &&
+    !isCallExpression(parent, {
+      callee: node,
+    }) &&
+    !isMemberExpression(parent) &&
+    !isNewExpression(parent)
+  ) {
     return;
   }
   this.print(node.typeArguments, node);
@@ -116,7 +124,11 @@ function isDecoratorMemberExpression(node) {
     case "Identifier":
       return true;
     case "MemberExpression":
-      return !node.computed && node.property.type === "Identifier" && isDecoratorMemberExpression(node.object);
+      return (
+        !node.computed &&
+        node.property.type === "Identifier" &&
+        isDecoratorMemberExpression(node.object)
+      );
     default:
       return false;
   }
@@ -125,19 +137,21 @@ function shouldParenthesizeDecoratorExpression(node) {
   if (node.type === "ParenthesizedExpression") {
     return false;
   }
-  return !isDecoratorMemberExpression(node.type === "CallExpression" ? node.callee : node);
+  return !isDecoratorMemberExpression(
+    node.type === "CallExpression" ? node.callee : node,
+  );
 }
 function _shouldPrintDecoratorsBeforeExport(node) {
   if (typeof this.format.decoratorsBeforeExport === "boolean") {
     return this.format.decoratorsBeforeExport;
   }
-  return typeof node.start === "number" && node.start === node.declaration.start;
+  return (
+    typeof node.start === "number" && node.start === node.declaration.start
+  );
 }
 function Decorator(node) {
   this.tokenChar(64);
-  const {
-    expression
-  } = node;
+  const { expression } = node;
   if (shouldParenthesizeDecoratorExpression(expression)) {
     this.tokenChar(40);
     this.print(expression, node);
@@ -148,13 +162,8 @@ function Decorator(node) {
   this.newline();
 }
 function OptionalMemberExpression(node) {
-  let {
-    computed
-  } = node;
-  const {
-    optional,
-    property
-  } = node;
+  let { computed } = node;
+  const { optional, property } = node;
   this.print(node.object, node);
   if (!computed && isMemberExpression(property)) {
     throw new TypeError("Got a MemberExpression for MemberExpression property");
@@ -237,7 +246,10 @@ function AssignmentPattern(node) {
   this.print(node.right, node);
 }
 function AssignmentExpression(node, parent) {
-  const parens = this.inForStatementInitCounter && node.operator === "in" && !n.needsParens(node, parent);
+  const parens =
+    this.inForStatementInitCounter &&
+    node.operator === "in" &&
+    !n.needsParens(node, parent);
   if (parens) {
     this.tokenChar(40);
   }
@@ -295,9 +307,7 @@ function ModuleExpression(node) {
   this.space();
   this.tokenChar(123);
   this.indent();
-  const {
-    body
-  } = node;
+  const { body } = node;
   if (body.body.length || body.directives.length) {
     this.newline();
   }

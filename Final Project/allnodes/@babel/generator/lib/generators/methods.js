@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ArrowFunctionExpression = ArrowFunctionExpression;
 exports.FunctionDeclaration = exports.FunctionExpression = FunctionExpression;
@@ -12,9 +12,7 @@ exports._parameters = _parameters;
 exports._params = _params;
 exports._predicate = _predicate;
 var _t = require("@babel/types");
-const {
-  isIdentifier
-} = _t;
+const { isIdentifier } = _t;
 function _params(node, idNode, parentNode) {
   this.print(node.typeParameters, node);
   const nameInfo = _getFuncIdName.call(this, idNode, parentNode);
@@ -72,7 +70,11 @@ function _methodHead(node) {
   if (node.optional) {
     this.tokenChar(63);
   }
-  this._params(node, node.computed && node.key.type !== "StringLiteral" ? undefined : node.key, undefined);
+  this._params(
+    node,
+    node.computed && node.key.type !== "StringLiteral" ? undefined : node.key,
+    undefined,
+  );
 }
 function _predicate(node, noLineTerminatorAfter) {
   if (node.predicate) {
@@ -114,7 +116,12 @@ function ArrowFunctionExpression(node, parent) {
     this.space();
   }
   let firstParam;
-  if (!this.format.retainLines && node.params.length === 1 && isIdentifier(firstParam = node.params[0]) && !hasTypesOrComments(node, firstParam)) {
+  if (
+    !this.format.retainLines &&
+    node.params.length === 1 &&
+    isIdentifier((firstParam = node.params[0])) &&
+    !hasTypesOrComments(node, firstParam)
+  ) {
     this.print(firstParam, node, true);
   } else {
     this._params(node, undefined, parent);
@@ -128,7 +135,17 @@ function ArrowFunctionExpression(node, parent) {
 }
 function hasTypesOrComments(node, param) {
   var _param$leadingComment, _param$trailingCommen;
-  return !!(node.typeParameters || node.returnType || node.predicate || param.typeAnnotation || param.optional || (_param$leadingComment = param.leadingComments) != null && _param$leadingComment.length || (_param$trailingCommen = param.trailingComments) != null && _param$trailingCommen.length);
+  return !!(
+    node.typeParameters ||
+    node.returnType ||
+    node.predicate ||
+    param.typeAnnotation ||
+    param.optional ||
+    ((_param$leadingComment = param.leadingComments) != null &&
+      _param$leadingComment.length) ||
+    ((_param$trailingCommen = param.trailingComments) != null &&
+      _param$trailingCommen.length)
+  );
 }
 function _getFuncIdName(idNode, parent) {
   let id = idNode;
@@ -136,13 +153,22 @@ function _getFuncIdName(idNode, parent) {
     const parentType = parent.type;
     if (parentType === "VariableDeclarator") {
       id = parent.id;
-    } else if (parentType === "AssignmentExpression" || parentType === "AssignmentPattern") {
+    } else if (
+      parentType === "AssignmentExpression" ||
+      parentType === "AssignmentPattern"
+    ) {
       id = parent.left;
-    } else if (parentType === "ObjectProperty" || parentType === "ClassProperty") {
+    } else if (
+      parentType === "ObjectProperty" ||
+      parentType === "ClassProperty"
+    ) {
       if (!parent.computed || parent.key.type === "StringLiteral") {
         id = parent.key;
       }
-    } else if (parentType === "ClassPrivateProperty" || parentType === "ClassAccessorProperty") {
+    } else if (
+      parentType === "ClassPrivateProperty" ||
+      parentType === "ClassAccessorProperty"
+    ) {
       id = parent.key;
     }
   }
@@ -152,19 +178,21 @@ function _getFuncIdName(idNode, parent) {
     var _id$loc, _id$loc2;
     nameInfo = {
       pos: (_id$loc = id.loc) == null ? void 0 : _id$loc.start,
-      name: ((_id$loc2 = id.loc) == null ? void 0 : _id$loc2.identifierName) || id.name
+      name:
+        ((_id$loc2 = id.loc) == null ? void 0 : _id$loc2.identifierName) ||
+        id.name,
     };
   } else if (id.type === "PrivateName") {
     var _id$loc3;
     nameInfo = {
       pos: (_id$loc3 = id.loc) == null ? void 0 : _id$loc3.start,
-      name: "#" + id.id.name
+      name: "#" + id.id.name,
     };
   } else if (id.type === "StringLiteral") {
     var _id$loc4;
     nameInfo = {
       pos: (_id$loc4 = id.loc) == null ? void 0 : _id$loc4.start,
-      name: id.value
+      name: id.value,
     };
   }
   return nameInfo;

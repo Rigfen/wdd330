@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _regeneratorRuntime;
 function _regeneratorRuntime() {
@@ -12,9 +12,11 @@ function _regeneratorRuntime() {
   var _exports = {};
   var Op = Object.prototype;
   var hasOwn = Op.hasOwnProperty;
-  var defineProperty = Object.defineProperty || function (obj, key, desc) {
-    obj[key] = desc.value;
-  };
+  var defineProperty =
+    Object.defineProperty ||
+    function (obj, key, desc) {
+      obj[key] = desc.value;
+    };
   var undefined;
   var $Symbol = typeof Symbol === "function" ? Symbol : {};
   var iteratorSymbol = $Symbol.iterator || "@@iterator";
@@ -25,7 +27,7 @@ function _regeneratorRuntime() {
       value: value,
       enumerable: true,
       configurable: true,
-      writable: true
+      writable: true,
     });
     return obj[key];
   }
@@ -33,15 +35,16 @@ function _regeneratorRuntime() {
     define({}, "");
   } catch (err) {
     define = function (obj, key, value) {
-      return obj[key] = value;
+      return (obj[key] = value);
     };
   }
   function wrap(innerFn, outerFn, self, tryLocsList) {
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var protoGenerator =
+      outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
     var generator = Object.create(protoGenerator.prototype);
     var context = new Context(tryLocsList || []);
     defineProperty(generator, "_invoke", {
-      value: makeInvokeMethod(innerFn, self, context)
+      value: makeInvokeMethod(innerFn, self, context),
     });
     return generator;
   }
@@ -50,12 +53,12 @@ function _regeneratorRuntime() {
     try {
       return {
         type: "normal",
-        arg: fn.call(obj, arg)
+        arg: fn.call(obj, arg),
       };
     } catch (err) {
       return {
         type: "throw",
-        arg: err
+        arg: err,
       };
     }
   }
@@ -73,20 +76,31 @@ function _regeneratorRuntime() {
   });
   var getProto = Object.getPrototypeOf;
   var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+  if (
+    NativeIteratorPrototype &&
+    NativeIteratorPrototype !== Op &&
+    hasOwn.call(NativeIteratorPrototype, iteratorSymbol)
+  ) {
     IteratorPrototype = NativeIteratorPrototype;
   }
-  var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
+  var Gp =
+    (GeneratorFunctionPrototype.prototype =
+    Generator.prototype =
+      Object.create(IteratorPrototype));
   GeneratorFunction.prototype = GeneratorFunctionPrototype;
   defineProperty(Gp, "constructor", {
     value: GeneratorFunctionPrototype,
-    configurable: true
+    configurable: true,
   });
   defineProperty(GeneratorFunctionPrototype, "constructor", {
     value: GeneratorFunction,
-    configurable: true
+    configurable: true,
   });
-  GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction");
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction",
+  );
   function defineIteratorMethods(prototype) {
     ["next", "throw", "return"].forEach(function (method) {
       define(prototype, method, function (arg) {
@@ -96,7 +110,10 @@ function _regeneratorRuntime() {
   }
   _exports.isGeneratorFunction = function (genFun) {
     var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor ? ctor === GeneratorFunction || (ctor.displayName || ctor.name) === "GeneratorFunction" : false;
+    return ctor
+      ? ctor === GeneratorFunction ||
+          (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
   };
   _exports.mark = function (genFun) {
     if (Object.setPrototypeOf) {
@@ -110,7 +127,7 @@ function _regeneratorRuntime() {
   };
   _exports.awrap = function (arg) {
     return {
-      __await: arg
+      __await: arg,
     };
   };
   function AsyncIterator(generator, PromiseImpl) {
@@ -121,19 +138,29 @@ function _regeneratorRuntime() {
       } else {
         var result = record.arg;
         var value = result.value;
-        if (value && typeof value === "object" && hasOwn.call(value, "__await")) {
-          return PromiseImpl.resolve(value.__await).then(function (value) {
-            invoke("next", value, resolve, reject);
-          }, function (err) {
-            invoke("throw", err, resolve, reject);
-          });
+        if (
+          value &&
+          typeof value === "object" &&
+          hasOwn.call(value, "__await")
+        ) {
+          return PromiseImpl.resolve(value.__await).then(
+            function (value) {
+              invoke("next", value, resolve, reject);
+            },
+            function (err) {
+              invoke("throw", err, resolve, reject);
+            },
+          );
         }
-        return PromiseImpl.resolve(value).then(function (unwrapped) {
-          result.value = unwrapped;
-          resolve(result);
-        }, function (error) {
-          return invoke("throw", error, resolve, reject);
-        });
+        return PromiseImpl.resolve(value).then(
+          function (unwrapped) {
+            result.value = unwrapped;
+            resolve(result);
+          },
+          function (error) {
+            return invoke("throw", error, resolve, reject);
+          },
+        );
       }
     }
     var previousPromise;
@@ -143,10 +170,15 @@ function _regeneratorRuntime() {
           invoke(method, arg, resolve, reject);
         });
       }
-      return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
+      return (previousPromise = previousPromise
+        ? previousPromise.then(
+            callInvokeWithMethodAndArg,
+            callInvokeWithMethodAndArg,
+          )
+        : callInvokeWithMethodAndArg());
     }
     defineProperty(this, "_invoke", {
-      value: enqueue
+      value: enqueue,
     });
   }
   defineIteratorMethods(AsyncIterator.prototype);
@@ -156,10 +188,15 @@ function _regeneratorRuntime() {
   _exports.AsyncIterator = AsyncIterator;
   _exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) {
     if (PromiseImpl === void 0) PromiseImpl = Promise;
-    var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl);
-    return _exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) {
-      return result.done ? result.value : iter.next();
-    });
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl,
+    );
+    return _exports.isGeneratorFunction(outerFn)
+      ? iter
+      : iter.next().then(function (result) {
+          return result.done ? result.value : iter.next();
+        });
   };
   function makeInvokeMethod(innerFn, self, context) {
     var state = GenStateSuspendedStart;
@@ -204,7 +241,7 @@ function _regeneratorRuntime() {
           }
           return {
             value: record.arg,
-            done: context.done
+            done: context.done,
           };
         } else if (record.type === "throw") {
           state = GenStateCompleted;
@@ -229,7 +266,9 @@ function _regeneratorRuntime() {
       }
       if (methodName !== "return") {
         context.method = "throw";
-        context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method");
+        context.arg = new TypeError(
+          "The iterator does not provide a '" + methodName + "' method",
+        );
       }
       return ContinueSentinel;
     }
@@ -270,7 +309,7 @@ function _regeneratorRuntime() {
   });
   function pushTryEntry(locs) {
     var entry = {
-      tryLoc: locs[0]
+      tryLoc: locs[0],
     };
     if (1 in locs) {
       entry.catchLoc = locs[1];
@@ -288,9 +327,11 @@ function _regeneratorRuntime() {
     entry.completion = record;
   }
   function Context(tryLocsList) {
-    this.tryEntries = [{
-      tryLoc: "root"
-    }];
+    this.tryEntries = [
+      {
+        tryLoc: "root",
+      },
+    ];
     tryLocsList.forEach(pushTryEntry, this);
     this.reset(true);
   }
@@ -337,7 +378,7 @@ function _regeneratorRuntime() {
             next.done = true;
             return next;
           };
-        return next.next = next;
+        return (next.next = next);
       }
     }
     throw new TypeError(typeof iterable + " is not iterable");
@@ -346,7 +387,7 @@ function _regeneratorRuntime() {
   function doneResult() {
     return {
       value: undefined,
-      done: true
+      done: true,
     };
   }
   Context.prototype = {
@@ -362,7 +403,11 @@ function _regeneratorRuntime() {
       this.tryEntries.forEach(resetTryEntry);
       if (!skipTempReset) {
         for (var name in this) {
-          if (name.charAt(0) === "t" && hasOwn.call(this, name) && !isNaN(+name.slice(1))) {
+          if (
+            name.charAt(0) === "t" &&
+            hasOwn.call(this, name) &&
+            !isNaN(+name.slice(1))
+          ) {
             this[name] = undefined;
           }
         }
@@ -424,12 +469,21 @@ function _regeneratorRuntime() {
     abrupt: function (type, arg) {
       for (var i = this.tryEntries.length - 1; i >= 0; --i) {
         var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) {
+        if (
+          entry.tryLoc <= this.prev &&
+          hasOwn.call(entry, "finallyLoc") &&
+          this.prev < entry.finallyLoc
+        ) {
           var finallyEntry = entry;
           break;
         }
       }
-      if (finallyEntry && (type === "break" || type === "continue") && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc) {
+      if (
+        finallyEntry &&
+        (type === "break" || type === "continue") &&
+        finallyEntry.tryLoc <= arg &&
+        arg <= finallyEntry.finallyLoc
+      ) {
         finallyEntry = null;
       }
       var record = finallyEntry ? finallyEntry.completion : {};
@@ -485,13 +539,13 @@ function _regeneratorRuntime() {
       this.delegate = {
         iterator: values(iterable),
         resultName: resultName,
-        nextLoc: nextLoc
+        nextLoc: nextLoc,
       };
       if (this.method === "next") {
         this.arg = undefined;
       }
       return ContinueSentinel;
-    }
+    },
   };
   return _exports;
 }

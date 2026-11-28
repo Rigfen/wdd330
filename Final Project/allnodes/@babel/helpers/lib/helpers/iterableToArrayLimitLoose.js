@@ -1,11 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _iterableToArrayLimitLoose;
 function _iterableToArrayLimitLoose(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+  var _i =
+    arr &&
+    ((typeof Symbol !== "undefined" && arr[Symbol.iterator]) ||
+      arr["@@iterator"]);
   if (_i == null) return;
   var _arr = [];
   var _s;

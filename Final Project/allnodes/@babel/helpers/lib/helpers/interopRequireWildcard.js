@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _interopRequireWildcard;
 function _getRequireWildcardCache(nodeInterop) {
@@ -16,9 +16,9 @@ function _interopRequireWildcard(obj, nodeInterop) {
   if (!nodeInterop && obj && obj.__esModule) {
     return obj;
   }
-  if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
+  if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
     return {
-      default: obj
+      default: obj,
     };
   }
   var cache = _getRequireWildcardCache(nodeInterop);
@@ -26,12 +26,15 @@ function _interopRequireWildcard(obj, nodeInterop) {
     return cache.get(obj);
   }
   var newObj = {
-    __proto__: null
+    __proto__: null,
   };
-  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+  var hasPropertyDescriptor =
+    Object.defineProperty && Object.getOwnPropertyDescriptor;
   for (var key in obj) {
     if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
-      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+      var desc = hasPropertyDescriptor
+        ? Object.getOwnPropertyDescriptor(obj, key)
+        : null;
       if (desc && (desc.get || desc.set)) {
         Object.defineProperty(newObj, key, desc);
       } else {

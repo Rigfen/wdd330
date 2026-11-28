@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = simplifyAccess;
 var _t = require("@babel/types");
@@ -14,16 +14,12 @@ const {
   logicalExpression,
   numericLiteral,
   sequenceExpression,
-  unaryExpression
+  unaryExpression,
 } = _t;
 const simpleAssignmentVisitor = {
   AssignmentExpression: {
     exit(path) {
-      const {
-        scope,
-        seen,
-        bindingNames
-      } = this;
+      const { scope, seen, bindingNames } = this;
       if (path.node.operator === "=") return;
       if (seen.has(path.node)) return;
       seen.add(path.node);
@@ -36,22 +32,33 @@ const simpleAssignmentVisitor = {
       }
       const operator = path.node.operator.slice(0, -1);
       if (LOGICAL_OPERATORS.includes(operator)) {
-        path.replaceWith(logicalExpression(operator, path.node.left, assignmentExpression("=", cloneNode(path.node.left), path.node.right)));
+        path.replaceWith(
+          logicalExpression(
+            operator,
+            path.node.left,
+            assignmentExpression(
+              "=",
+              cloneNode(path.node.left),
+              path.node.right,
+            ),
+          ),
+        );
       } else {
-        path.node.right = binaryExpression(operator, cloneNode(path.node.left), path.node.right);
+        path.node.right = binaryExpression(
+          operator,
+          cloneNode(path.node.left),
+          path.node.right,
+        );
         path.node.operator = "=";
       }
-    }
-  }
+    },
+  },
 };
 {
   simpleAssignmentVisitor.UpdateExpression = {
     exit(path) {
       if (!this.includeUpdateExpression) return;
-      const {
-        scope,
-        bindingNames
-      } = this;
+      const { scope, bindingNames } = this;
       const arg = path.get("argument");
       if (!arg.isIdentifier()) return;
       const localName = arg.node.name;
@@ -59,21 +66,53 @@ const simpleAssignmentVisitor = {
       if (scope.getBinding(localName) !== path.scope.getBinding(localName)) {
         return;
       }
-      if (path.parentPath.isExpressionStatement() && !path.isCompletionRecord()) {
+      if (
+        path.parentPath.isExpressionStatement() &&
+        !path.isCompletionRecord()
+      ) {
         const operator = path.node.operator == "++" ? "+=" : "-=";
-        path.replaceWith(assignmentExpression(operator, arg.node, numericLiteral(1)));
+        path.replaceWith(
+          assignmentExpression(operator, arg.node, numericLiteral(1)),
+        );
       } else if (path.node.prefix) {
-        path.replaceWith(assignmentExpression("=", identifier(localName), binaryExpression(path.node.operator[0], unaryExpression("+", arg.node), numericLiteral(1))));
+        path.replaceWith(
+          assignmentExpression(
+            "=",
+            identifier(localName),
+            binaryExpression(
+              path.node.operator[0],
+              unaryExpression("+", arg.node),
+              numericLiteral(1),
+            ),
+          ),
+        );
       } else {
-        const old = path.scope.generateUidIdentifierBasedOnNode(arg.node, "old");
+        const old = path.scope.generateUidIdentifierBasedOnNode(
+          arg.node,
+          "old",
+        );
         const varName = old.name;
         path.scope.push({
-          id: old
+          id: old,
         });
-        const binary = binaryExpression(path.node.operator[0], identifier(varName), numericLiteral(1));
-        path.replaceWith(sequenceExpression([assignmentExpression("=", identifier(varName), unaryExpression("+", arg.node)), assignmentExpression("=", cloneNode(arg.node), binary), identifier(varName)]));
+        const binary = binaryExpression(
+          path.node.operator[0],
+          identifier(varName),
+          numericLiteral(1),
+        );
+        path.replaceWith(
+          sequenceExpression([
+            assignmentExpression(
+              "=",
+              identifier(varName),
+              unaryExpression("+", arg.node),
+            ),
+            assignmentExpression("=", cloneNode(arg.node), binary),
+            identifier(varName),
+          ]),
+        );
       }
-    }
+    },
   };
 }
 function simplifyAccess(path, bindingNames) {
@@ -83,7 +122,8 @@ function simplifyAccess(path, bindingNames) {
       scope: path.scope,
       bindingNames,
       seen: new WeakSet(),
-      includeUpdateExpression: (_arguments$ = arguments[2]) != null ? _arguments$ : true
+      includeUpdateExpression:
+        (_arguments$ = arguments[2]) != null ? _arguments$ : true,
     });
   }
 }

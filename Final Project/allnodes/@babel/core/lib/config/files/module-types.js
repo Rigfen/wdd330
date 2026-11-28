@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = loadCodeDefault;
 exports.supportsESM = void 0;
@@ -37,20 +37,50 @@ function _debug() {
 var _rewriteStackTrace = require("../../errors/rewrite-stack-trace.js");
 var _configError = require("../../errors/config-error.js");
 var _transformFile = require("../../transform-file.js");
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+      args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+      _next(undefined);
+    });
+  };
+}
 const debug = _debug()("babel:config:loading:files:module-types");
 let import_;
 try {
   import_ = require("./import.cjs");
 } catch (_unused) {}
-const supportsESM = exports.supportsESM = _semver().satisfies(process.versions.node, "^12.17 || >=13.2");
+const supportsESM = (exports.supportsESM = _semver().satisfies(
+  process.versions.node,
+  "^12.17 || >=13.2",
+));
 function* loadCodeDefault(filepath, asyncError) {
   switch (_path().extname(filepath)) {
-    case ".cjs":
-      {
-        return loadCjsDefault(filepath, arguments[2]);
-      }
+    case ".cjs": {
+      return loadCjsDefault(filepath, arguments[2]);
+    }
     case ".mjs":
       break;
     case ".cts":
@@ -71,7 +101,11 @@ function* loadCodeDefault(filepath, asyncError) {
 }
 function loadCtsDefault(filepath) {
   const ext = ".cts";
-  const hasTsSupport = !!(require.extensions[".ts"] || require.extensions[".cts"] || require.extensions[".mts"]);
+  const hasTsSupport = !!(
+    require.extensions[".ts"] ||
+    require.extensions[".cts"] ||
+    require.extensions[".mts"]
+  );
   let handler;
   if (!hasTsSupport) {
     const opts = {
@@ -80,24 +114,40 @@ function loadCtsDefault(filepath) {
       sourceType: "unambiguous",
       sourceMaps: "inline",
       sourceFileName: _path().basename(filepath),
-      presets: [[getTSPreset(filepath), Object.assign({
-        onlyRemoveTypeImports: true,
-        optimizeConstEnums: true
-      }, {
-        allowDeclareFields: true
-      })]]
+      presets: [
+        [
+          getTSPreset(filepath),
+          Object.assign(
+            {
+              onlyRemoveTypeImports: true,
+              optimizeConstEnums: true,
+            },
+            {
+              allowDeclareFields: true,
+            },
+          ),
+        ],
+      ],
     };
     handler = function (m, filename) {
       if (handler && filename.endsWith(ext)) {
         try {
-          return m._compile((0, _transformFile.transformFileSync)(filename, Object.assign({}, opts, {
-            filename
-          })).code, filename);
+          return m._compile(
+            (0, _transformFile.transformFileSync)(
+              filename,
+              Object.assign({}, opts, {
+                filename,
+              }),
+            ).code,
+            filename,
+          );
         } catch (error) {
           if (!hasTsSupport) {
             const packageJson = require("@babel/preset-typescript/package.json");
             if (_semver().lt(packageJson.version, "7.21.4")) {
-              console.error("`.cts` configuration file failed to load, please try to update `@babel/preset-typescript`.");
+              console.error(
+                "`.cts` configuration file failed to load, please try to update `@babel/preset-typescript`.",
+              );
             }
           }
           throw error;
@@ -131,7 +181,9 @@ function loadCjsDefault(filepath) {
   }
   {
     var _module;
-    return (_module = module) != null && _module.__esModule ? module.default || (arguments[1] ? module : undefined) : module;
+    return (_module = module) != null && _module.__esModule
+      ? module.default || (arguments[1] ? module : undefined)
+      : module;
   }
 }
 function loadMjsDefault(_x) {
@@ -140,9 +192,14 @@ function loadMjsDefault(_x) {
 function _loadMjsDefault() {
   _loadMjsDefault = _asyncToGenerator(function* (filepath) {
     if (!import_) {
-      throw new _configError.default("Internal error: Native ECMAScript modules aren't supported by this platform.\n", filepath);
+      throw new _configError.default(
+        "Internal error: Native ECMAScript modules aren't supported by this platform.\n",
+        filepath,
+      );
     }
-    const module = yield (0, _rewriteStackTrace.endHiddenCallStack)(import_)((0, _url().pathToFileURL)(filepath));
+    const module = yield (0, _rewriteStackTrace.endHiddenCallStack)(import_)(
+      (0, _url().pathToFileURL)(filepath),
+    );
     return module.default;
   });
   return _loadMjsDefault.apply(this, arguments);
@@ -152,7 +209,8 @@ function getTSPreset(filepath) {
     return require("@babel/preset-typescript");
   } catch (error) {
     if (error.code !== "MODULE_NOT_FOUND") throw error;
-    let message = "You appear to be using a .cts file as Babel configuration, but the `@babel/preset-typescript` package was not found: please install it!";
+    let message =
+      "You appear to be using a .cts file as Babel configuration, but the `@babel/preset-typescript` package was not found: please install it!";
     {
       if (process.versions.pnp) {
         message += `

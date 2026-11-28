@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = populatePlaceholders;
 var _t = require("@babel/types");
@@ -14,13 +14,15 @@ const {
   isStatement,
   isStringLiteral,
   stringLiteral,
-  validate
+  validate,
 } = _t;
 function populatePlaceholders(metadata, replacements) {
   const ast = cloneNode(metadata.ast);
   if (replacements) {
-    metadata.placeholders.forEach(placeholder => {
-      if (!Object.prototype.hasOwnProperty.call(replacements, placeholder.name)) {
+    metadata.placeholders.forEach((placeholder) => {
+      if (
+        !Object.prototype.hasOwnProperty.call(replacements, placeholder.name)
+      ) {
         const placeholderName = placeholder.name;
         throw new Error(`Error: No substitution given for "${placeholderName}". If this is not meant to be a
             placeholder you may want to consider passing one of the following options to @babel/template:
@@ -28,35 +30,38 @@ function populatePlaceholders(metadata, replacements) {
             - { placeholderPattern: /^${placeholderName}$/ }`);
       }
     });
-    Object.keys(replacements).forEach(key => {
+    Object.keys(replacements).forEach((key) => {
       if (!metadata.placeholderNames.has(key)) {
         throw new Error(`Unknown substitution "${key}" given`);
       }
     });
   }
-  metadata.placeholders.slice().reverse().forEach(placeholder => {
-    try {
-      applyReplacement(placeholder, ast, replacements && replacements[placeholder.name] || null);
-    } catch (e) {
-      e.message = `@babel/template placeholder "${placeholder.name}": ${e.message}`;
-      throw e;
-    }
-  });
+  metadata.placeholders
+    .slice()
+    .reverse()
+    .forEach((placeholder) => {
+      try {
+        applyReplacement(
+          placeholder,
+          ast,
+          (replacements && replacements[placeholder.name]) || null,
+        );
+      } catch (e) {
+        e.message = `@babel/template placeholder "${placeholder.name}": ${e.message}`;
+        throw e;
+      }
+    });
   return ast;
 }
 function applyReplacement(placeholder, ast, replacement) {
   if (placeholder.isDuplicate) {
     if (Array.isArray(replacement)) {
-      replacement = replacement.map(node => cloneNode(node));
+      replacement = replacement.map((node) => cloneNode(node));
     } else if (typeof replacement === "object") {
       replacement = cloneNode(replacement);
     }
   }
-  const {
-    parent,
-    key,
-    index
-  } = placeholder.resolve(ast);
+  const { parent, key, index } = placeholder.resolve(ast);
   if (placeholder.type === "string") {
     if (typeof replacement === "string") {
       replacement = stringLiteral(replacement);

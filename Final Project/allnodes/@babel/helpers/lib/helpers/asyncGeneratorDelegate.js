@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _asyncGeneratorDelegate;
 var _OverloadYield = require("OverloadYield");
@@ -15,12 +15,13 @@ function _asyncGeneratorDelegate(inner) {
     });
     return {
       done: false,
-      value: new _OverloadYield(value, 1)
+      value: new _OverloadYield(value, 1),
     };
   }
-  iter[typeof Symbol !== "undefined" && Symbol.iterator || "@@iterator"] = function () {
-    return this;
-  };
+  iter[(typeof Symbol !== "undefined" && Symbol.iterator) || "@@iterator"] =
+    function () {
+      return this;
+    };
   iter.next = function (value) {
     if (waiting) {
       waiting = false;

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _importDeferProxy;
 function _importDeferProxy(init) {
@@ -17,19 +17,22 @@ function _importDeferProxy(init) {
       return run(ns, arg2, arg3);
     };
   };
-  return new Proxy({}, {
-    defineProperty: constValue(false),
-    deleteProperty: constValue(false),
-    get: proxy(Reflect.get),
-    getOwnPropertyDescriptor: proxy(Reflect.getOwnPropertyDescriptor),
-    getPrototypeOf: constValue(null),
-    isExtensible: constValue(false),
-    has: proxy(Reflect.has),
-    ownKeys: proxy(Reflect.ownKeys),
-    preventExtensions: constValue(true),
-    set: constValue(false),
-    setPrototypeOf: constValue(false)
-  });
+  return new Proxy(
+    {},
+    {
+      defineProperty: constValue(false),
+      deleteProperty: constValue(false),
+      get: proxy(Reflect.get),
+      getOwnPropertyDescriptor: proxy(Reflect.getOwnPropertyDescriptor),
+      getPrototypeOf: constValue(null),
+      isExtensible: constValue(false),
+      has: proxy(Reflect.has),
+      ownKeys: proxy(Reflect.ownKeys),
+      preventExtensions: constValue(true),
+      set: constValue(false),
+      setPrototypeOf: constValue(false),
+    },
+  );
 }
 
 //# sourceMappingURL=importDeferProxy.js.map

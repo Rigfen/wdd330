@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ExportAllDeclaration = ExportAllDeclaration;
 exports.ExportDefaultDeclaration = ExportDefaultDeclaration;
@@ -23,7 +23,7 @@ const {
   isExportNamespaceSpecifier,
   isImportDefaultSpecifier,
   isImportNamespaceSpecifier,
-  isStatement
+  isStatement,
 } = _t;
 function ImportSpecifier(node) {
   if (node.importKind === "type" || node.importKind === "typeof") {
@@ -66,13 +66,8 @@ function ExportNamespaceSpecifier(node) {
 }
 let warningShown = false;
 function _printAttributes(node) {
-  const {
-    importAttributesKeyword
-  } = this.format;
-  const {
-    attributes,
-    assertions
-  } = node;
+  const { importAttributesKeyword } = this.format;
+  const { attributes, assertions } = node;
   if (attributes && !importAttributesKeyword && !warningShown) {
     warningShown = true;
     console.warn(`\
@@ -83,7 +78,9 @@ Please specify the "importAttributesKeyword" generator option, whose value can b
  - "with-legacy" : \`import { a } from "b" with type: "json";\`
 `);
   }
-  const useAssertKeyword = importAttributesKeyword === "assert" || !importAttributesKeyword && assertions;
+  const useAssertKeyword =
+    importAttributesKeyword === "assert" ||
+    (!importAttributesKeyword && assertions);
   this.word(useAssertKeyword ? "assert" : "with");
   this.space();
   if (!useAssertKeyword && importAttributesKeyword !== "with") {
@@ -108,7 +105,10 @@ function ExportAllDeclaration(node) {
   this.space();
   this.word("from");
   this.space();
-  if ((_node$attributes = node.attributes) != null && _node$attributes.length || (_node$assertions = node.assertions) != null && _node$assertions.length) {
+  if (
+    ((_node$attributes = node.attributes) != null && _node$attributes.length) ||
+    ((_node$assertions = node.assertions) != null && _node$assertions.length)
+  ) {
     this.print(node.source, node, true);
     this.space();
     this._printAttributes(node);
@@ -118,7 +118,10 @@ function ExportAllDeclaration(node) {
   this.semicolon();
 }
 function maybePrintDecoratorsBeforeExport(printer, node) {
-  if (isClassDeclaration(node.declaration) && printer._shouldPrintDecoratorsBeforeExport(node)) {
+  if (
+    isClassDeclaration(node.declaration) &&
+    printer._shouldPrintDecoratorsBeforeExport(node)
+  ) {
     printer.printJoin(node.declaration.decorators, node);
   }
 }
@@ -139,7 +142,10 @@ function ExportNamedDeclaration(node) {
     let hasSpecial = false;
     for (;;) {
       const first = specifiers[0];
-      if (isExportDefaultSpecifier(first) || isExportNamespaceSpecifier(first)) {
+      if (
+        isExportDefaultSpecifier(first) ||
+        isExportNamespaceSpecifier(first)
+      ) {
         hasSpecial = true;
         this.print(specifiers.shift(), node);
         if (specifiers.length) {
@@ -150,7 +156,7 @@ function ExportNamedDeclaration(node) {
         break;
       }
     }
-    if (specifiers.length || !specifiers.length && !hasSpecial) {
+    if (specifiers.length || (!specifiers.length && !hasSpecial)) {
       this.tokenChar(123);
       if (specifiers.length) {
         this.space();
@@ -164,7 +170,12 @@ function ExportNamedDeclaration(node) {
       this.space();
       this.word("from");
       this.space();
-      if ((_node$attributes2 = node.attributes) != null && _node$attributes2.length || (_node$assertions2 = node.assertions) != null && _node$assertions2.length) {
+      if (
+        ((_node$attributes2 = node.attributes) != null &&
+          _node$attributes2.length) ||
+        ((_node$assertions2 = node.assertions) != null &&
+          _node$assertions2.length)
+      ) {
         this.print(node.source, node, true);
         this.space();
         this._printAttributes(node);
@@ -233,7 +244,11 @@ function ImportDeclaration(node) {
     this.word("from");
     this.space();
   }
-  if ((_node$attributes3 = node.attributes) != null && _node$attributes3.length || (_node$assertions3 = node.assertions) != null && _node$assertions3.length) {
+  if (
+    ((_node$attributes3 = node.attributes) != null &&
+      _node$attributes3.length) ||
+    ((_node$assertions3 = node.assertions) != null && _node$assertions3.length)
+  ) {
     this.print(node.source, node, true);
     this.space();
     this._printAttributes(node);

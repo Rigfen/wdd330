@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.BreakStatement = BreakStatement;
 exports.CatchClause = CatchClause;
@@ -22,12 +22,7 @@ exports.VariableDeclarator = VariableDeclarator;
 exports.WhileStatement = WhileStatement;
 exports.WithStatement = WithStatement;
 var _t = require("@babel/types");
-const {
-  isFor,
-  isForStatement,
-  isIfStatement,
-  isStatement
-} = _t;
+const { isFor, isForStatement, isIfStatement, isStatement } = _t;
 function WithStatement(node) {
   this.word("with");
   this.space();
@@ -43,7 +38,8 @@ function IfStatement(node) {
   this.print(node.test, node);
   this.tokenChar(41);
   this.space();
-  const needsBlock = node.alternate && isIfStatement(getLastStatement(node.consequent));
+  const needsBlock =
+    node.alternate && isIfStatement(getLastStatement(node.consequent));
   if (needsBlock) {
     this.tokenChar(123);
     this.newline();
@@ -63,9 +59,7 @@ function IfStatement(node) {
   }
 }
 function getLastStatement(statement) {
-  const {
-    body
-  } = statement;
+  const { body } = statement;
   if (isStatement(body) === false) {
     return statement;
   }
@@ -117,8 +111,8 @@ function ForXStatement(node) {
   this.tokenChar(41);
   this.printBlock(node);
 }
-const ForInStatement = exports.ForInStatement = ForXStatement;
-const ForOfStatement = exports.ForOfStatement = ForXStatement;
+const ForInStatement = (exports.ForInStatement = ForXStatement);
+const ForOfStatement = (exports.ForOfStatement = ForXStatement);
 function DoWhileStatement(node) {
   this.word("do");
   this.space();
@@ -201,7 +195,7 @@ function SwitchStatement(node) {
     indent: true,
     addNewlines(leading, cas) {
       if (!leading && node.cases[node.cases.length - 1] === cas) return -1;
-    }
+    },
   });
   this.rightBrace(node);
 }
@@ -218,7 +212,7 @@ function SwitchCase(node) {
   if (node.consequent.length) {
     this.newline();
     this.printSequence(node.consequent, node, {
-      indent: true
+      indent: true,
     });
   }
 }
@@ -231,9 +225,7 @@ function VariableDeclaration(node, parent) {
     this.word("declare");
     this.space();
   }
-  const {
-    kind
-  } = node;
+  const { kind } = node;
   this.word(kind, kind === "using" || kind === "await using");
   this.space();
   let hasInits = false;
@@ -245,11 +237,13 @@ function VariableDeclaration(node, parent) {
     }
   }
   this.printList(node.declarations, node, {
-    separator: hasInits ? function () {
-      this.tokenChar(44);
-      this.newline();
-    } : undefined,
-    indent: node.declarations.length > 1 ? true : false
+    separator: hasInits
+      ? function () {
+          this.tokenChar(44);
+          this.newline();
+        }
+      : undefined,
+    indent: node.declarations.length > 1 ? true : false,
   });
   if (isFor(parent)) {
     if (isForStatement(parent)) {

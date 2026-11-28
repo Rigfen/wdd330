@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = generate;
 var _sourceMap = require("./source-map.js");
@@ -20,16 +20,22 @@ function normalizeOptions(code, opts) {
     concise: opts.concise,
     indent: {
       adjustMultilineComment: true,
-      style: "  "
+      style: "  ",
     },
-    jsescOption: Object.assign({
-      quotes: "double",
-      wrap: true,
-      minimal: false
-    }, opts.jsescOption),
-    recordAndTupleSyntaxType: (_opts$recordAndTupleS = opts.recordAndTupleSyntaxType) != null ? _opts$recordAndTupleS : "hash",
+    jsescOption: Object.assign(
+      {
+        quotes: "double",
+        wrap: true,
+        minimal: false,
+      },
+      opts.jsescOption,
+    ),
+    recordAndTupleSyntaxType:
+      (_opts$recordAndTupleS = opts.recordAndTupleSyntaxType) != null
+        ? _opts$recordAndTupleS
+        : "hash",
     topicToken: opts.topicToken,
-    importAttributesKeyword: opts.importAttributesKeyword
+    importAttributesKeyword: opts.importAttributesKeyword,
   };
   {
     format.decoratorsBeforeExport = opts.decoratorsBeforeExport;
@@ -37,24 +43,30 @@ function normalizeOptions(code, opts) {
   }
   if (format.minified) {
     format.compact = true;
-    format.shouldPrintComment = format.shouldPrintComment || (() => format.comments);
+    format.shouldPrintComment =
+      format.shouldPrintComment || (() => format.comments);
   } else {
-    format.shouldPrintComment = format.shouldPrintComment || (value => format.comments || value.includes("@license") || value.includes("@preserve"));
+    format.shouldPrintComment =
+      format.shouldPrintComment ||
+      ((value) =>
+        format.comments ||
+        value.includes("@license") ||
+        value.includes("@preserve"));
   }
   if (format.compact === "auto") {
     format.compact = typeof code === "string" && code.length > 500000;
     if (format.compact) {
-      console.error("[BABEL] Note: The code generator has deoptimised the styling of " + `${opts.filename} as it exceeds the max of ${"500KB"}.`);
+      console.error(
+        "[BABEL] Note: The code generator has deoptimised the styling of " +
+          `${opts.filename} as it exceeds the max of ${"500KB"}.`,
+      );
     }
   }
   if (format.compact) {
     format.indent.adjustMultilineComment = false;
   }
-  const {
-    auxiliaryCommentBefore,
-    auxiliaryCommentAfter,
-    shouldPrintComment
-  } = format;
+  const { auxiliaryCommentBefore, auxiliaryCommentAfter, shouldPrintComment } =
+    format;
   if (auxiliaryCommentBefore && !shouldPrintComment(auxiliaryCommentBefore)) {
     format.auxiliaryCommentBefore = undefined;
   }

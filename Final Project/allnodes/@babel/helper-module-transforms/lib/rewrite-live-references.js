@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = rewriteLiveReferences;
 var _assert = require("assert");
@@ -26,7 +26,7 @@ const {
   sequenceExpression,
   stringLiteral,
   variableDeclaration,
-  variableDeclarator
+  variableDeclarator,
 } = _core.types;
 function isInType(path) {
   do {
@@ -44,12 +44,12 @@ function isInType(path) {
           return false;
         }
     }
-  } while (path = path.parentPath);
+  } while ((path = path.parentPath));
 }
 function rewriteLiveReferences(programPath, metadata, wrapReference) {
   const imported = new Map();
   const exported = new Map();
-  const requeueInParent = path => {
+  const requeueInParent = (path) => {
     programPath.requeue(path);
   };
   for (const [source, data] of metadata.source) {
@@ -72,10 +72,16 @@ function rewriteLiveReferences(programPath, metadata, wrapReference) {
     metadata,
     requeueInParent,
     scope: programPath.scope,
-    exported
+    exported,
   };
-  programPath.traverse(rewriteBindingInitVisitor, rewriteBindingInitVisitorState);
-  const bindingNames = new Set([...Array.from(imported.keys()), ...Array.from(exported.keys())]);
+  programPath.traverse(
+    rewriteBindingInitVisitor,
+    rewriteBindingInitVisitorState,
+  );
+  const bindingNames = new Set([
+    ...Array.from(imported.keys()),
+    ...Array.from(exported.keys()),
+  ]);
   {
     (0, _helperSimpleAccess.default)(programPath, bindingNames, false);
   }
@@ -92,21 +98,31 @@ function rewriteLiveReferences(programPath, metadata, wrapReference) {
       if (localName) {
         if (meta.wrap) {
           var _wrapReference;
-          identNode = (_wrapReference = wrapReference(identNode, meta.wrap)) != null ? _wrapReference : identNode;
+          identNode =
+            (_wrapReference = wrapReference(identNode, meta.wrap)) != null
+              ? _wrapReference
+              : identNode;
         }
         return identNode;
       }
       let namespace = identifier(meta.name);
       if (meta.wrap) {
         var _wrapReference2;
-        namespace = (_wrapReference2 = wrapReference(namespace, meta.wrap)) != null ? _wrapReference2 : namespace;
+        namespace =
+          (_wrapReference2 = wrapReference(namespace, meta.wrap)) != null
+            ? _wrapReference2
+            : namespace;
       }
       if (importName === "default" && meta.interop === "node-default") {
         return namespace;
       }
       const computed = metadata.stringSpecifiers.has(importName);
-      return memberExpression(namespace, computed ? stringLiteral(importName) : identifier(importName), computed);
-    }
+      return memberExpression(
+        namespace,
+        computed ? stringLiteral(importName) : identifier(importName),
+        computed,
+      );
+    },
   };
   programPath.traverse(rewriteReferencesVisitor, rewriteReferencesVisitorState);
 }
@@ -115,38 +131,37 @@ const rewriteBindingInitVisitor = {
     path.skip();
   },
   ClassDeclaration(path) {
-    const {
-      requeueInParent,
-      exported,
-      metadata
-    } = this;
-    const {
-      id
-    } = path.node;
+    const { requeueInParent, exported, metadata } = this;
+    const { id } = path.node;
     if (!id) throw new Error("Expected class to have a name");
     const localName = id.name;
     const exportNames = exported.get(localName) || [];
     if (exportNames.length > 0) {
-      const statement = expressionStatement(buildBindingExportAssignmentExpression(metadata, exportNames, identifier(localName), path.scope));
+      const statement = expressionStatement(
+        buildBindingExportAssignmentExpression(
+          metadata,
+          exportNames,
+          identifier(localName),
+          path.scope,
+        ),
+      );
       statement._blockHoist = path.node._blockHoist;
       requeueInParent(path.insertAfter(statement)[0]);
     }
   },
   VariableDeclaration(path) {
-    const {
-      requeueInParent,
-      exported,
-      metadata
-    } = this;
+    const { requeueInParent, exported, metadata } = this;
     const isVar = path.node.kind === "var";
     for (const decl of path.get("declarations")) {
-      const {
-        id
-      } = decl.node;
-      let {
-        init
-      } = decl.node;
-      if (isIdentifier(id) && exported.has(id.name) && !isArrowFunctionExpression(init) && (!isFunctionExpression(init) || init.id) && (!isClassExpression(init) || init.id)) {
+      const { id } = decl.node;
+      let { init } = decl.node;
+      if (
+        isIdentifier(id) &&
+        exported.has(id.name) &&
+        !isArrowFunctionExpression(init) &&
+        (!isFunctionExpression(init) || init.id) &&
+        (!isClassExpression(init) || init.id)
+      ) {
         if (!init) {
           if (isVar) {
             continue;
@@ -154,36 +169,65 @@ const rewriteBindingInitVisitor = {
             init = path.scope.buildUndefinedNode();
           }
         }
-        decl.node.init = buildBindingExportAssignmentExpression(metadata, exported.get(id.name), init, path.scope);
+        decl.node.init = buildBindingExportAssignmentExpression(
+          metadata,
+          exported.get(id.name),
+          init,
+          path.scope,
+        );
         requeueInParent(decl.get("init"));
       } else {
-        for (const localName of Object.keys(decl.getOuterBindingIdentifiers())) {
+        for (const localName of Object.keys(
+          decl.getOuterBindingIdentifiers(),
+        )) {
           if (exported.has(localName)) {
-            const statement = expressionStatement(buildBindingExportAssignmentExpression(metadata, exported.get(localName), identifier(localName), path.scope));
+            const statement = expressionStatement(
+              buildBindingExportAssignmentExpression(
+                metadata,
+                exported.get(localName),
+                identifier(localName),
+                path.scope,
+              ),
+            );
             statement._blockHoist = path.node._blockHoist;
             requeueInParent(path.insertAfter(statement)[0]);
           }
         }
       }
     }
-  }
+  },
 };
-const buildBindingExportAssignmentExpression = (metadata, exportNames, localExpr, scope) => {
+const buildBindingExportAssignmentExpression = (
+  metadata,
+  exportNames,
+  localExpr,
+  scope,
+) => {
   const exportsObjectName = metadata.exportName;
-  for (let currentScope = scope; currentScope != null; currentScope = currentScope.parent) {
+  for (
+    let currentScope = scope;
+    currentScope != null;
+    currentScope = currentScope.parent
+  ) {
     if (currentScope.hasOwnBinding(exportsObjectName)) {
       currentScope.rename(exportsObjectName);
     }
   }
   return (exportNames || []).reduce((expr, exportName) => {
-    const {
-      stringSpecifiers
-    } = metadata;
+    const { stringSpecifiers } = metadata;
     const computed = stringSpecifiers.has(exportName);
-    return assignmentExpression("=", memberExpression(identifier(exportsObjectName), computed ? stringLiteral(exportName) : identifier(exportName), computed), expr);
+    return assignmentExpression(
+      "=",
+      memberExpression(
+        identifier(exportsObjectName),
+        computed ? stringLiteral(exportName) : identifier(exportName),
+        computed,
+      ),
+      expr,
+    );
   }, localExpr);
 };
-const buildImportThrow = localName => {
+const buildImportThrow = (localName) => {
   return _core.template.expression.ast`
     (function() {
       throw new Error('"' + '${localName}' + '" is read-only.');
@@ -192,40 +236,45 @@ const buildImportThrow = localName => {
 };
 const rewriteReferencesVisitor = {
   ReferencedIdentifier(path) {
-    const {
-      seen,
-      buildImportReference,
-      scope,
-      imported,
-      requeueInParent
-    } = this;
+    const { seen, buildImportReference, scope, imported, requeueInParent } =
+      this;
     if (seen.has(path.node)) return;
     seen.add(path.node);
     const localName = path.node.name;
     const importData = imported.get(localName);
     if (importData) {
       if (isInType(path)) {
-        throw path.buildCodeFrameError(`Cannot transform the imported binding "${localName}" since it's also used in a type annotation. ` + `Please strip type annotations using @babel/preset-typescript or @babel/preset-flow.`);
+        throw path.buildCodeFrameError(
+          `Cannot transform the imported binding "${localName}" since it's also used in a type annotation. ` +
+            `Please strip type annotations using @babel/preset-typescript or @babel/preset-flow.`,
+        );
       }
       const localBinding = path.scope.getBinding(localName);
       const rootBinding = scope.getBinding(localName);
       if (rootBinding !== localBinding) return;
       const ref = buildImportReference(importData, path.node);
       ref.loc = path.node.loc;
-      if ((path.parentPath.isCallExpression({
-        callee: path.node
-      }) || path.parentPath.isOptionalCallExpression({
-        callee: path.node
-      }) || path.parentPath.isTaggedTemplateExpression({
-        tag: path.node
-      })) && isMemberExpression(ref)) {
+      if (
+        (path.parentPath.isCallExpression({
+          callee: path.node,
+        }) ||
+          path.parentPath.isOptionalCallExpression({
+            callee: path.node,
+          }) ||
+          path.parentPath.isTaggedTemplateExpression({
+            tag: path.node,
+          })) &&
+        isMemberExpression(ref)
+      ) {
         path.replaceWith(sequenceExpression([numericLiteral(0), ref]));
       } else if (path.isJSXIdentifier() && isMemberExpression(ref)) {
-        const {
-          object,
-          property
-        } = ref;
-        path.replaceWith(jsxMemberExpression(jsxIdentifier(object.name), jsxIdentifier(property.name)));
+        const { object, property } = ref;
+        path.replaceWith(
+          jsxMemberExpression(
+            jsxIdentifier(object.name),
+            jsxIdentifier(property.name),
+          ),
+        );
       } else {
         path.replaceWith(ref);
       }
@@ -240,7 +289,7 @@ const rewriteReferencesVisitor = {
       imported,
       exported,
       requeueInParent,
-      buildImportReference
+      buildImportReference,
     } = this;
     if (seen.has(path.node)) return;
     seen.add(path.node);
@@ -254,14 +303,41 @@ const rewriteReferencesVisitor = {
       }
       const exportedNames = exported.get(localName);
       const importData = imported.get(localName);
-      if ((exportedNames == null ? void 0 : exportedNames.length) > 0 || importData) {
+      if (
+        (exportedNames == null ? void 0 : exportedNames.length) > 0 ||
+        importData
+      ) {
         if (importData) {
-          path.replaceWith(assignmentExpression(update.operator[0] + "=", buildImportReference(importData, arg.node), buildImportThrow(localName)));
+          path.replaceWith(
+            assignmentExpression(
+              update.operator[0] + "=",
+              buildImportReference(importData, arg.node),
+              buildImportThrow(localName),
+            ),
+          );
         } else if (update.prefix) {
-          path.replaceWith(buildBindingExportAssignmentExpression(this.metadata, exportedNames, cloneNode(update), path.scope));
+          path.replaceWith(
+            buildBindingExportAssignmentExpression(
+              this.metadata,
+              exportedNames,
+              cloneNode(update),
+              path.scope,
+            ),
+          );
         } else {
           const ref = scope.generateDeclaredUidIdentifier(localName);
-          path.replaceWith(sequenceExpression([assignmentExpression("=", cloneNode(ref), cloneNode(update)), buildBindingExportAssignmentExpression(this.metadata, exportedNames, identifier(localName), path.scope), cloneNode(ref)]));
+          path.replaceWith(
+            sequenceExpression([
+              assignmentExpression("=", cloneNode(ref), cloneNode(update)),
+              buildBindingExportAssignmentExpression(
+                this.metadata,
+                exportedNames,
+                identifier(localName),
+                path.scope,
+              ),
+              cloneNode(ref),
+            ]),
+          );
         }
       }
     }
@@ -276,7 +352,7 @@ const rewriteReferencesVisitor = {
         imported,
         exported,
         requeueInParent,
-        buildImportReference
+        buildImportReference,
       } = this;
       if (seen.has(path.node)) return;
       seen.add(path.node);
@@ -289,28 +365,54 @@ const rewriteReferencesVisitor = {
         }
         const exportedNames = exported.get(localName);
         const importData = imported.get(localName);
-        if ((exportedNames == null ? void 0 : exportedNames.length) > 0 || importData) {
+        if (
+          (exportedNames == null ? void 0 : exportedNames.length) > 0 ||
+          importData
+        ) {
           _assert(path.node.operator === "=", "Path was not simplified");
           const assignment = path.node;
           if (importData) {
             assignment.left = buildImportReference(importData, left.node);
-            assignment.right = sequenceExpression([assignment.right, buildImportThrow(localName)]);
+            assignment.right = sequenceExpression([
+              assignment.right,
+              buildImportThrow(localName),
+            ]);
           }
-          path.replaceWith(buildBindingExportAssignmentExpression(this.metadata, exportedNames, assignment, path.scope));
+          path.replaceWith(
+            buildBindingExportAssignmentExpression(
+              this.metadata,
+              exportedNames,
+              assignment,
+              path.scope,
+            ),
+          );
           requeueInParent(path);
         }
       } else {
         const ids = left.getOuterBindingIdentifiers();
-        const programScopeIds = Object.keys(ids).filter(localName => scope.getBinding(localName) === path.scope.getBinding(localName));
-        const id = programScopeIds.find(localName => imported.has(localName));
+        const programScopeIds = Object.keys(ids).filter(
+          (localName) =>
+            scope.getBinding(localName) === path.scope.getBinding(localName),
+        );
+        const id = programScopeIds.find((localName) => imported.has(localName));
         if (id) {
-          path.node.right = sequenceExpression([path.node.right, buildImportThrow(id)]);
+          path.node.right = sequenceExpression([
+            path.node.right,
+            buildImportThrow(id),
+          ]);
         }
         const items = [];
-        programScopeIds.forEach(localName => {
+        programScopeIds.forEach((localName) => {
           const exportedNames = exported.get(localName) || [];
           if (exportedNames.length > 0) {
-            items.push(buildBindingExportAssignmentExpression(this.metadata, exportedNames, identifier(localName), path.scope));
+            items.push(
+              buildBindingExportAssignmentExpression(
+                this.metadata,
+                exportedNames,
+                identifier(localName),
+                path.scope,
+              ),
+            );
           }
         });
         if (items.length > 0) {
@@ -323,21 +425,12 @@ const rewriteReferencesVisitor = {
           requeueInParent(statement);
         }
       }
-    }
+    },
   },
   "ForOfStatement|ForInStatement"(path) {
-    const {
-      scope,
-      node
-    } = path;
-    const {
-      left
-    } = node;
-    const {
-      exported,
-      imported,
-      scope: programScope
-    } = this;
+    const { scope, node } = path;
+    const { left } = node;
+    const { exported, imported, scope: programScope } = this;
     if (!isVariableDeclaration(left)) {
       let didTransformExport = false,
         importConstViolationName;
@@ -361,16 +454,28 @@ const rewriteReferencesVisitor = {
       path.ensureBlock();
       const bodyPath = path.get("body");
       const newLoopId = scope.generateUidIdentifierBasedOnNode(left);
-      path.get("left").replaceWith(variableDeclaration("let", [variableDeclarator(cloneNode(newLoopId))]));
+      path
+        .get("left")
+        .replaceWith(
+          variableDeclaration("let", [
+            variableDeclarator(cloneNode(newLoopId)),
+          ]),
+        );
       scope.registerDeclaration(path.get("left"));
       if (didTransformExport) {
-        bodyPath.unshiftContainer("body", expressionStatement(assignmentExpression("=", left, newLoopId)));
+        bodyPath.unshiftContainer(
+          "body",
+          expressionStatement(assignmentExpression("=", left, newLoopId)),
+        );
       }
       if (importConstViolationName) {
-        bodyPath.unshiftContainer("body", expressionStatement(buildImportThrow(importConstViolationName)));
+        bodyPath.unshiftContainer(
+          "body",
+          expressionStatement(buildImportThrow(importConstViolationName)),
+        );
       }
     }
-  }
+  },
 };
 
 //# sourceMappingURL=rewrite-live-references.js.map

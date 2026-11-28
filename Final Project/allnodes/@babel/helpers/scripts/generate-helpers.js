@@ -44,7 +44,7 @@ export default Object.freeze({
 
     let code = await fs.promises.readFile(filePath, "utf8");
     const minVersionMatch = code.match(
-      /^\s*\/\*\s*@minVersion\s+(?<minVersion>\S+)\s*\*\/\s*$/m
+      /^\s*\/\*\s*@minVersion\s+(?<minVersion>\S+)\s*\*\/\s*$/m,
     );
     if (!minVersionMatch) {
       throw new Error(`@minVersion number missing in ${filePath}`);
@@ -82,8 +82,8 @@ export default Object.freeze({
             FunctionDeclaration(path) {
               if (
                 mangleFns &&
-                path.node.leadingComments?.find(c =>
-                  c.value.includes("@no-mangle")
+                path.node.leadingComments?.find((c) =>
+                  c.value.includes("@no-mangle"),
                 )
               ) {
                 const name = path.node.id.name;

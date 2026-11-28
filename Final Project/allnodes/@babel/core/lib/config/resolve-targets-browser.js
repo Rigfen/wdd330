@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.resolveBrowserslistConfigFile = resolveBrowserslistConfigFile;
 exports.resolveTargets = resolveTargets;
@@ -20,12 +20,12 @@ function resolveTargets(options, root) {
   let targets;
   if (typeof optTargets === "string" || Array.isArray(optTargets)) {
     targets = {
-      browsers: optTargets
+      browsers: optTargets,
     };
   } else if (optTargets) {
     if ("esmodules" in optTargets) {
       targets = Object.assign({}, optTargets, {
-        esmodules: "intersect"
+        esmodules: "intersect",
       });
     } else {
       targets = optTargets;
@@ -33,7 +33,7 @@ function resolveTargets(options, root) {
   }
   return (0, _helperCompilationTargets().default)(targets, {
     ignoreBrowserslistConfig: true,
-    browserslistEnv: options.browserslistEnv
+    browserslistEnv: options.browserslistEnv,
   });
 }
 0 && 0;

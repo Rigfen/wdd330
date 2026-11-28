@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.BlockStatement = BlockStatement;
 exports.Directive = Directive;
@@ -20,14 +20,21 @@ function Program(node) {
   var _node$directives;
   this.noIndentInnerCommentsHere();
   this.printInnerComments();
-  const directivesLen = (_node$directives = node.directives) == null ? void 0 : _node$directives.length;
+  const directivesLen =
+    (_node$directives = node.directives) == null
+      ? void 0
+      : _node$directives.length;
   if (directivesLen) {
     var _node$directives$trai;
     const newline = node.body.length ? 2 : 1;
     this.printSequence(node.directives, node, {
-      trailingCommentsLineOffset: newline
+      trailingCommentsLineOffset: newline,
     });
-    if (!((_node$directives$trai = node.directives[directivesLen - 1].trailingComments) != null && _node$directives$trai.length)) {
+    if (!(
+      (_node$directives$trai =
+        node.directives[directivesLen - 1].trailingComments) != null &&
+      _node$directives$trai.length
+    )) {
       this.newline(newline);
     }
   }
@@ -36,20 +43,27 @@ function Program(node) {
 function BlockStatement(node) {
   var _node$directives2;
   this.tokenChar(123);
-  const directivesLen = (_node$directives2 = node.directives) == null ? void 0 : _node$directives2.length;
+  const directivesLen =
+    (_node$directives2 = node.directives) == null
+      ? void 0
+      : _node$directives2.length;
   if (directivesLen) {
     var _node$directives$trai2;
     const newline = node.body.length ? 2 : 1;
     this.printSequence(node.directives, node, {
       indent: true,
-      trailingCommentsLineOffset: newline
+      trailingCommentsLineOffset: newline,
     });
-    if (!((_node$directives$trai2 = node.directives[directivesLen - 1].trailingComments) != null && _node$directives$trai2.length)) {
+    if (!(
+      (_node$directives$trai2 =
+        node.directives[directivesLen - 1].trailingComments) != null &&
+      _node$directives$trai2.length
+    )) {
       this.newline(newline);
     }
   }
   this.printSequence(node.body, node, {
-    indent: true
+    indent: true,
   });
   this.rightBrace(node);
 }
@@ -65,15 +79,16 @@ function DirectiveLiteral(node) {
     this.token(raw);
     return;
   }
-  const {
-    value
-  } = node;
+  const { value } = node;
   if (!unescapedDoubleQuoteRE.test(value)) {
     this.token(`"${value}"`);
   } else if (!unescapedSingleQuoteRE.test(value)) {
     this.token(`'${value}'`);
   } else {
-    throw new Error("Malformed AST: it is not possible to print a directive containing" + " both unescaped single and double quotes.");
+    throw new Error(
+      "Malformed AST: it is not possible to print a directive containing" +
+        " both unescaped single and double quotes.",
+    );
   }
 }
 function InterpreterDirective(node) {

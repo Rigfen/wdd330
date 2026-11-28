@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _wrapRegExp;
 var _setPrototypeOf = require("setPrototypeOf");
@@ -30,10 +30,14 @@ function _wrapRegExp() {
   BabelRegExp.prototype[Symbol.replace] = function (str, substitution) {
     if (typeof substitution === "string") {
       var groups = _groups.get(this);
-      return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)>/g, function (_, name) {
-        var group = groups[name];
-        return "$" + (Array.isArray(group) ? group.join("$") : group);
-      }));
+      return _super[Symbol.replace].call(
+        this,
+        str,
+        substitution.replace(/\$<([^>]+)>/g, function (_, name) {
+          var group = groups[name];
+          return "$" + (Array.isArray(group) ? group.join("$") : group);
+        }),
+      );
     } else if (typeof substitution === "function") {
       var _this = this;
       return _super[Symbol.replace].call(this, str, function () {
@@ -52,7 +56,8 @@ function _wrapRegExp() {
     var g = _groups.get(re);
     return Object.keys(g).reduce(function (groups, name) {
       var i = g[name];
-      if (typeof i === "number") groups[name] = result[i];else {
+      if (typeof i === "number") groups[name] = result[i];
+      else {
         var k = 0;
         while (result[i[k]] === undefined && k + 1 < i.length) k++;
         groups[name] = result[i[k]];

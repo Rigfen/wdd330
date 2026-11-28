@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _buffer = require("./buffer.js");
@@ -13,15 +13,13 @@ const {
   isStatement,
   isClassBody,
   isTSInterfaceBody,
-  isTSEnumDeclaration
+  isTSEnumDeclaration,
 } = _t;
 const SCIENTIFIC_NOTATION = /e/i;
 const ZERO_DECIMAL_INTEGER = /\.0+$/;
 const HAS_NEWLINE = /[\n\r\u2028\u2029]/;
 const HAS_NEWLINE_OR_BlOCK_COMMENT_END = /[\n\r\u2028\u2029]|\*\//;
-const {
-  needsParens
-} = n;
+const { needsParens } = n;
 class Printer {
   constructor(format, map) {
     this.inForStatementInitCounter = 0;
@@ -89,7 +87,7 @@ class Printer {
   }
   word(str, noLineTerminatorAfter = false) {
     this._maybePrintInnerComments();
-    if (this._endsWithWord || str.charCodeAt(0) === 47 && this.endsWith(47)) {
+    if (this._endsWithWord || (str.charCodeAt(0) === 47 && this.endsWith(47))) {
       this._space();
     }
     this._maybeAddAuxComment();
@@ -106,13 +104,23 @@ class Printer {
       return false;
     }
     this.word(str);
-    this._endsWithInteger = Number.isInteger(number) && !isNonDecimalLiteral(str) && !SCIENTIFIC_NOTATION.test(str) && !ZERO_DECIMAL_INTEGER.test(str) && str.charCodeAt(str.length - 1) !== 46;
+    this._endsWithInteger =
+      Number.isInteger(number) &&
+      !isNonDecimalLiteral(str) &&
+      !SCIENTIFIC_NOTATION.test(str) &&
+      !ZERO_DECIMAL_INTEGER.test(str) &&
+      str.charCodeAt(str.length - 1) !== 46;
   }
   token(str, maybeNewline = false) {
     this._maybePrintInnerComments();
     const lastChar = this.getLastChar();
     const strFirst = str.charCodeAt(0);
-    if (lastChar === 33 && (str === "--" || strFirst === 61) || strFirst === 43 && lastChar === 43 || strFirst === 45 && lastChar === 45 || strFirst === 46 && this._endsWithInteger) {
+    if (
+      (lastChar === 33 && (str === "--" || strFirst === 61)) ||
+      (strFirst === 43 && lastChar === 43) ||
+      (strFirst === 45 && lastChar === 45) ||
+      (strFirst === 46 && this._endsWithInteger)
+    ) {
       this._space();
     }
     this._maybeAddAuxComment();
@@ -122,7 +130,11 @@ class Printer {
   tokenChar(char) {
     this._maybePrintInnerComments();
     const lastChar = this.getLastChar();
-    if (char === 43 && lastChar === 43 || char === 45 && lastChar === 45 || char === 46 && this._endsWithInteger) {
+    if (
+      (char === 43 && lastChar === 43) ||
+      (char === 45 && lastChar === 45) ||
+      (char === 46 && this._endsWithInteger)
+    ) {
       this._space();
     }
     this._maybeAddAuxComment();
@@ -277,7 +289,8 @@ class Printer {
   _catchUp(prop, loc) {
     var _loc$prop;
     if (!this.format.retainLines) return;
-    const line = loc == null || (_loc$prop = loc[prop]) == null ? void 0 : _loc$prop.line;
+    const line =
+      loc == null || (_loc$prop = loc[prop]) == null ? void 0 : _loc$prop.line;
     if (line != null) {
       const count = line - this._buf.getCurrentLine();
       for (let i = 0; i < count; i++) {
@@ -294,7 +307,7 @@ class Printer {
       this.print(node, parent);
     } else {
       const terminatorState = {
-        printed: false
+        printed: false,
       };
       this._parenPushNewlineState = terminatorState;
       this.print(node, parent);
@@ -305,7 +318,13 @@ class Printer {
       }
     }
   }
-  print(node, parent, noLineTerminatorAfter, trailingCommentsLineOffset, forceParens) {
+  print(
+    node,
+    parent,
+    noLineTerminatorAfter,
+    trailingCommentsLineOffset,
+    forceParens,
+  ) {
     var _node$extra, _node$leadingComments;
     if (!node) return;
     this._endsWithInnerRaw = false;
@@ -317,15 +336,29 @@ class Printer {
     }
     const printMethod = this[nodeType];
     if (printMethod === undefined) {
-      throw new ReferenceError(`unknown node of type ${JSON.stringify(nodeType)} with constructor ${JSON.stringify(node.constructor.name)}`);
+      throw new ReferenceError(
+        `unknown node of type ${JSON.stringify(nodeType)} with constructor ${JSON.stringify(node.constructor.name)}`,
+      );
     }
     this._printStack.push(node);
     const oldInAux = this._insideAux;
     this._insideAux = node.loc == undefined;
     this._maybeAddAuxComment(this._insideAux && !oldInAux);
-    const parenthesized = (_node$extra = node.extra) == null ? void 0 : _node$extra.parenthesized;
-    let shouldPrintParens = forceParens || parenthesized && format.retainFunctionParens && nodeType === "FunctionExpression" || needsParens(node, parent, this._printStack);
-    if (!shouldPrintParens && parenthesized && (_node$leadingComments = node.leadingComments) != null && _node$leadingComments.length && node.leadingComments[0].type === "CommentBlock") {
+    const parenthesized =
+      (_node$extra = node.extra) == null ? void 0 : _node$extra.parenthesized;
+    let shouldPrintParens =
+      forceParens ||
+      (parenthesized &&
+        format.retainFunctionParens &&
+        nodeType === "FunctionExpression") ||
+      needsParens(node, parent, this._printStack);
+    if (
+      !shouldPrintParens &&
+      parenthesized &&
+      (_node$leadingComments = node.leadingComments) != null &&
+      _node$leadingComments.length &&
+      node.leadingComments[0].type === "CommentBlock"
+    ) {
       const parentType = parent == null ? void 0 : parent.type;
       switch (parentType) {
         case "ExpressionStatement":
@@ -373,10 +406,13 @@ class Printer {
     this._printAuxAfterOnNextUserNode = true;
     const comment = this.format.auxiliaryCommentBefore;
     if (comment) {
-      this._printComment({
-        type: "CommentBlock",
-        value: comment
-      }, 0);
+      this._printComment(
+        {
+          type: "CommentBlock",
+          value: comment,
+        },
+        0,
+      );
     }
   }
   _printAuxAfterComment() {
@@ -384,26 +420,34 @@ class Printer {
     this._printAuxAfterOnNextUserNode = false;
     const comment = this.format.auxiliaryCommentAfter;
     if (comment) {
-      this._printComment({
-        type: "CommentBlock",
-        value: comment
-      }, 0);
+      this._printComment(
+        {
+          type: "CommentBlock",
+          value: comment,
+        },
+        0,
+      );
     }
   }
   getPossibleRaw(node) {
     const extra = node.extra;
-    if ((extra == null ? void 0 : extra.raw) != null && extra.rawValue != null && node.value === extra.rawValue) {
+    if (
+      (extra == null ? void 0 : extra.raw) != null &&
+      extra.rawValue != null &&
+      node.value === extra.rawValue
+    ) {
       return extra.raw;
     }
   }
   printJoin(nodes, parent, opts = {}) {
     if (!(nodes != null && nodes.length)) return;
-    let {
-      indent
-    } = opts;
+    let { indent } = opts;
     if (indent == null && this.format.retainLines) {
       var _nodes$0$loc;
-      const startLine = (_nodes$0$loc = nodes[0].loc) == null ? void 0 : _nodes$0$loc.start.line;
+      const startLine =
+        (_nodes$0$loc = nodes[0].loc) == null
+          ? void 0
+          : _nodes$0$loc.start.line;
       if (startLine != null && startLine !== this._buf.getCurrentLine()) {
         indent = true;
       }
@@ -411,7 +455,7 @@ class Printer {
     if (indent) this.indent();
     const newlineOpts = {
       addNewlines: opts.addNewlines,
-      nextNodeStartLine: 0
+      nextNodeStartLine: 0,
     };
     const separator = opts.separator ? opts.separator.bind(this) : null;
     const len = nodes.length;
@@ -424,7 +468,10 @@ class Printer {
       if (i < len - 1) separator == null || separator();
       if (opts.statement) {
         var _node$trailingComment;
-        if (!((_node$trailingComment = node.trailingComments) != null && _node$trailingComment.length)) {
+        if (!(
+          (_node$trailingComment = node.trailingComments) != null &&
+          _node$trailingComment.length
+        )) {
           this._lastCommentLine = 0;
         }
         if (i + 1 === len) {
@@ -432,7 +479,10 @@ class Printer {
         } else {
           var _nextNode$loc;
           const nextNode = nodes[i + 1];
-          newlineOpts.nextNodeStartLine = ((_nextNode$loc = nextNode.loc) == null ? void 0 : _nextNode$loc.start.line) || 0;
+          newlineOpts.nextNodeStartLine =
+            ((_nextNode$loc = nextNode.loc) == null
+              ? void 0
+              : _nextNode$loc.start.line) || 0;
           this._printNewline(true, newlineOpts);
         }
       }
@@ -453,10 +503,7 @@ class Printer {
     this.print(node, parent);
   }
   _printTrailingComments(node, parent, lineOffset) {
-    const {
-      innerComments,
-      trailingComments
-    } = node;
+    const { innerComments, trailingComments } = node;
     if (innerComments != null && innerComments.length) {
       this._printComments(2, innerComments, node, parent, lineOffset);
     }
@@ -494,7 +541,7 @@ class Printer {
   printSequence(nodes, parent, opts = {}) {
     var _opts$indent;
     opts.statement = true;
-    (_opts$indent = opts.indent) != null ? _opts$indent : opts.indent = false;
+    (_opts$indent = opts.indent) != null ? _opts$indent : (opts.indent = false);
     this.printJoin(nodes, parent, opts);
   }
   printList(items, parent, opts = {}) {
@@ -529,7 +576,10 @@ class Printer {
   _shouldPrintComment(comment) {
     if (comment.ignore) return 0;
     if (this._printedComments.has(comment)) return 0;
-    if (this._noLineTerminator && HAS_NEWLINE_OR_BlOCK_COMMENT_END.test(comment.value)) {
+    if (
+      this._noLineTerminator &&
+      HAS_NEWLINE_OR_BlOCK_COMMENT_END.test(comment.value)
+    ) {
       return 2;
     }
     this._printedComments.add(comment);
@@ -541,7 +591,8 @@ class Printer {
   _printComment(comment, skipNewLines) {
     const noLineTerminator = this._noLineTerminator;
     const isBlockComment = comment.type === "CommentBlock";
-    const printNewLines = isBlockComment && skipNewLines !== 1 && !this._noLineTerminator;
+    const printNewLines =
+      isBlockComment && skipNewLines !== 1 && !this._noLineTerminator;
     if (printNewLines && this._buf.hasContent() && skipNewLines !== 2) {
       this.newline(1);
     }
@@ -551,10 +602,13 @@ class Printer {
     }
     let val;
     if (isBlockComment) {
-      const {
-        _parenPushNewlineState
-      } = this;
-      if ((_parenPushNewlineState == null ? void 0 : _parenPushNewlineState.printed) === false && HAS_NEWLINE.test(comment.value)) {
+      const { _parenPushNewlineState } = this;
+      if (
+        (_parenPushNewlineState == null
+          ? void 0
+          : _parenPushNewlineState.printed) === false &&
+        HAS_NEWLINE.test(comment.value)
+      ) {
         this.tokenChar(40);
         this.indent();
         _parenPushNewlineState.printed = true;
@@ -562,7 +616,10 @@ class Printer {
       val = `/*${comment.value}*/`;
       if (this.format.indent.adjustMultilineComment) {
         var _comment$loc;
-        const offset = (_comment$loc = comment.loc) == null ? void 0 : _comment$loc.start.column;
+        const offset =
+          (_comment$loc = comment.loc) == null
+            ? void 0
+            : _comment$loc.start.column;
         if (offset) {
           const newlineRegex = new RegExp("\\n\\s{1," + offset + "}", "g");
           val = val.replace(newlineRegex, "\n");
@@ -570,7 +627,9 @@ class Printer {
         if (this.format.concise) {
           val = val.replace(/\n(?!$)/g, `\n`);
         } else {
-          let indentSize = this.format.retainLines ? 0 : this._buf.getCurrentColumn();
+          let indentSize = this.format.retainLines
+            ? 0
+            : this._buf.getCurrentColumn();
           if (this._shouldIndent(47) || this.format.retainLines) {
             indentSize += this._getIndent();
           }
@@ -600,7 +659,9 @@ class Printer {
     const nodeEndLine = hasLoc ? nodeLoc.end.line : 0;
     let lastLine = 0;
     let leadingCommentNewline = 0;
-    const maybeNewline = this._noLineTerminator ? function () {} : this.newline.bind(this);
+    const maybeNewline = this._noLineTerminator
+      ? function () {}
+      : this.newline.bind(this);
     for (let i = 0; i < len; i++) {
       const comment = comments[i];
       const shouldPrint = this._shouldPrintComment(comment);
@@ -614,7 +675,11 @@ class Printer {
         if (type === 0) {
           let offset = 0;
           if (i === 0) {
-            if (this._buf.hasContent() && (comment.type === "CommentLine" || commentStartLine != commentEndLine)) {
+            if (
+              this._buf.hasContent() &&
+              (comment.type === "CommentLine" ||
+                commentStartLine != commentEndLine)
+            ) {
               offset = leadingCommentNewline = 1;
             }
           } else {
@@ -624,11 +689,14 @@ class Printer {
           maybeNewline(offset);
           this._printComment(comment, 1);
           if (i + 1 === len) {
-            maybeNewline(Math.max(nodeStartLine - lastLine, leadingCommentNewline));
+            maybeNewline(
+              Math.max(nodeStartLine - lastLine, leadingCommentNewline),
+            );
             lastLine = nodeStartLine;
           }
         } else if (type === 1) {
-          const offset = commentStartLine - (i === 0 ? nodeStartLine : lastLine);
+          const offset =
+            commentStartLine - (i === 0 ? nodeStartLine : lastLine);
           lastLine = commentEndLine;
           maybeNewline(offset);
           this._printComment(comment, 1);
@@ -637,7 +705,8 @@ class Printer {
             lastLine = nodeEndLine;
           }
         } else {
-          const offset = commentStartLine - (i === 0 ? nodeEndLine - lineOffset : lastLine);
+          const offset =
+            commentStartLine - (i === 0 ? nodeEndLine - lineOffset : lastLine);
           lastLine = commentEndLine;
           maybeNewline(offset);
           this._printComment(comment, 1);
@@ -648,18 +717,37 @@ class Printer {
           continue;
         }
         if (len === 1) {
-          const singleLine = comment.loc ? comment.loc.start.line === comment.loc.end.line : !HAS_NEWLINE.test(comment.value);
-          const shouldSkipNewline = singleLine && !isStatement(node) && !isClassBody(parent) && !isTSInterfaceBody(parent) && !isTSEnumDeclaration(parent);
+          const singleLine = comment.loc
+            ? comment.loc.start.line === comment.loc.end.line
+            : !HAS_NEWLINE.test(comment.value);
+          const shouldSkipNewline =
+            singleLine &&
+            !isStatement(node) &&
+            !isClassBody(parent) &&
+            !isTSInterfaceBody(parent) &&
+            !isTSEnumDeclaration(parent);
           if (type === 0) {
-            this._printComment(comment, shouldSkipNewline && node.type !== "ObjectExpression" || singleLine && isFunction(parent, {
-              body: node
-            }) ? 1 : 0);
+            this._printComment(
+              comment,
+              (shouldSkipNewline && node.type !== "ObjectExpression") ||
+                (singleLine &&
+                  isFunction(parent, {
+                    body: node,
+                  }))
+                ? 1
+                : 0,
+            );
           } else if (shouldSkipNewline && type === 2) {
             this._printComment(comment, 1);
           } else {
             this._printComment(comment, 0);
           }
-        } else if (type === 1 && !(node.type === "ObjectExpression" && node.properties.length > 1) && node.type !== "ClassBody" && node.type !== "TSInterfaceBody") {
+        } else if (
+          type === 1 &&
+          !(node.type === "ObjectExpression" && node.properties.length > 1) &&
+          node.type !== "ClassBody" &&
+          node.type !== "TSInterfaceBody"
+        ) {
           this._printComment(comment, i === 0 ? 2 : i === len - 1 ? 3 : 0);
         } else {
           this._printComment(comment, 0);
@@ -675,7 +763,7 @@ Object.assign(Printer.prototype, generatorFunctions);
 {
   Printer.prototype.Noop = function Noop() {};
 }
-var _default = exports.default = Printer;
+var _default = (exports.default = Printer);
 function commaSeparator() {
   this.tokenChar(44);
   this.space();

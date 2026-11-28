@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.TSAnyKeyword = TSAnyKeyword;
 exports.TSArrayType = TSArrayType;
@@ -58,7 +58,8 @@ exports.TSTypeAssertion = TSTypeAssertion;
 exports.TSTypeLiteral = TSTypeLiteral;
 exports.TSTypeOperator = TSTypeOperator;
 exports.TSTypeParameter = TSTypeParameter;
-exports.TSTypeParameterDeclaration = exports.TSTypeParameterInstantiation = TSTypeParameterInstantiation;
+exports.TSTypeParameterDeclaration = exports.TSTypeParameterInstantiation =
+  TSTypeParameterInstantiation;
 exports.TSTypePredicate = TSTypePredicate;
 exports.TSTypeQuery = TSTypeQuery;
 exports.TSTypeReference = TSTypeReference;
@@ -147,9 +148,7 @@ function TSConstructSignatureDeclaration(node) {
   this.tokenChar(59);
 }
 function TSPropertySignature(node) {
-  const {
-    readonly
-  } = node;
+  const { readonly } = node;
   if (readonly) {
     this.word("readonly");
     this.space();
@@ -171,9 +170,7 @@ function tsPrintPropertyOrMethodName(node) {
   }
 }
 function TSMethodSignature(node) {
-  const {
-    kind
-  } = node;
+  const { kind } = node;
   if (kind === "set" || kind === "get") {
     this.word(kind);
     this.space();
@@ -183,10 +180,7 @@ function TSMethodSignature(node) {
   this.tokenChar(59);
 }
 function TSIndexSignature(node) {
-  const {
-    readonly,
-    static: isStatic
-  } = node;
+  const { readonly, static: isStatic } = node;
   if (isStatic) {
     this.word("static");
     this.space();
@@ -256,9 +250,7 @@ function TSConstructorType(node) {
   this.tsPrintFunctionOrConstructorType(node);
 }
 function tsPrintFunctionOrConstructorType(node) {
-  const {
-    typeParameters
-  } = node;
+  const { typeParameters } = node;
   const parameters = node.parameters;
   this.print(typeParameters, node);
   this.tokenChar(40);
@@ -350,7 +342,7 @@ function tsPrintUnionOrIntersectionType(printer, node, sep) {
       this.space();
       this.token(sep);
       this.space();
-    }
+    },
   });
 }
 function TSConditionalType(node) {
@@ -390,12 +382,7 @@ function TSIndexedAccessType(node) {
   this.tokenChar(93);
 }
 function TSMappedType(node) {
-  const {
-    nameType,
-    optional,
-    readonly,
-    typeParameter
-  } = node;
+  const { nameType, optional, readonly, typeParameter } = node;
   this.tokenChar(123);
   this.space();
   if (readonly) {
@@ -439,13 +426,7 @@ function TSExpressionWithTypeArguments(node) {
   this.print(node.typeParameters, node);
 }
 function TSInterfaceDeclaration(node) {
-  const {
-    declare,
-    id,
-    typeParameters,
-    extends: extendz,
-    body
-  } = node;
+  const { declare, id, typeParameters, extends: extendz, body } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -467,12 +448,7 @@ function TSInterfaceBody(node) {
   this.tsPrintTypeLiteralOrInterfaceBody(node.body, node);
 }
 function TSTypeAliasDeclaration(node) {
-  const {
-    declare,
-    id,
-    typeParameters,
-    typeAnnotation
-  } = node;
+  const { declare, id, typeParameters, typeAnnotation } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -489,12 +465,11 @@ function TSTypeAliasDeclaration(node) {
 }
 function TSTypeExpression(node) {
   var _expression$trailingC;
-  const {
-    type,
-    expression,
-    typeAnnotation
-  } = node;
-  const forceParens = !!((_expression$trailingC = expression.trailingComments) != null && _expression$trailingC.length);
+  const { type, expression, typeAnnotation } = node;
+  const forceParens = !!(
+    (_expression$trailingC = expression.trailingComments) != null &&
+    _expression$trailingC.length
+  );
   this.print(expression, node, true, undefined, forceParens);
   this.space();
   this.word(type === "TSAsExpression" ? "as" : "satisfies");
@@ -502,10 +477,7 @@ function TSTypeExpression(node) {
   this.print(typeAnnotation, node);
 }
 function TSTypeAssertion(node) {
-  const {
-    typeAnnotation,
-    expression
-  } = node;
+  const { typeAnnotation, expression } = node;
   this.tokenChar(60);
   this.print(typeAnnotation, node);
   this.tokenChar(62);
@@ -517,12 +489,7 @@ function TSInstantiationExpression(node) {
   this.print(node.typeParameters, node);
 }
 function TSEnumDeclaration(node) {
-  const {
-    declare,
-    const: isConst,
-    id,
-    members
-  } = node;
+  const { declare, const: isConst, id, members } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -538,10 +505,7 @@ function TSEnumDeclaration(node) {
   tsPrintBraced(this, members, node);
 }
 function TSEnumMember(node) {
-  const {
-    id,
-    initializer
-  } = node;
+  const { id, initializer } = node;
   this.print(id, node);
   if (initializer) {
     this.space();
@@ -552,10 +516,7 @@ function TSEnumMember(node) {
   this.tokenChar(44);
 }
 function TSModuleDeclaration(node) {
-  const {
-    declare,
-    id
-  } = node;
+  const { declare, id } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -582,11 +543,7 @@ function TSModuleBlock(node) {
   tsPrintBraced(this, node.body, node);
 }
 function TSImportType(node) {
-  const {
-    argument,
-    qualifier,
-    typeParameters
-  } = node;
+  const { argument, qualifier, typeParameters } = node;
   this.word("import");
   this.tokenChar(40);
   this.print(argument, node);
@@ -600,11 +557,7 @@ function TSImportType(node) {
   }
 }
 function TSImportEqualsDeclaration(node) {
-  const {
-    isExport,
-    id,
-    moduleReference
-  } = node;
+  const { isExport, id, moduleReference } = node;
   if (isExport) {
     this.word("export");
     this.space();
@@ -645,9 +598,7 @@ function TSNamespaceExportDeclaration(node) {
   this.print(node.id, node);
 }
 function tsPrintSignatureDeclarationBase(node) {
-  const {
-    typeParameters
-  } = node;
+  const { typeParameters } = node;
   const parameters = node.parameters;
   this.print(typeParameters, node);
   this.tokenChar(40);
@@ -657,7 +608,8 @@ function tsPrintSignatureDeclarationBase(node) {
   this.print(returnType, node);
 }
 function tsPrintClassMemberModifiers(node) {
-  const isField = node.type === "ClassAccessorProperty" || node.type === "ClassProperty";
+  const isField =
+    node.type === "ClassAccessorProperty" || node.type === "ClassProperty";
   if (isField && node.declare) {
     this.word("declare");
     this.space();

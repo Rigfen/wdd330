@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.needsParens = needsParens;
 exports.needsWhitespace = needsWhitespace;
@@ -15,16 +15,23 @@ const {
   isCallExpression,
   isExpressionStatement,
   isMemberExpression,
-  isNewExpression
+  isNewExpression,
 } = _t;
 function expandAliases(obj) {
   const map = new Map();
   function add(type, func) {
     const fn = map.get(type);
-    map.set(type, fn ? function (node, parent, stack) {
-      var _fn;
-      return (_fn = fn(node, parent, stack)) != null ? _fn : func(node, parent, stack);
-    } : func);
+    map.set(
+      type,
+      fn
+        ? function (node, parent, stack) {
+            var _fn;
+            return (_fn = fn(node, parent, stack)) != null
+              ? _fn
+              : func(node, parent, stack);
+          }
+        : func,
+    );
   }
   for (const type of Object.keys(obj)) {
     const aliases = FLIPPED_ALIAS_KEYS[type];
@@ -52,7 +59,10 @@ function needsWhitespace(node, parent, type) {
   if (isExpressionStatement(node)) {
     node = node.expression;
   }
-  const flag = (_expandedWhitespaceNo = expandedWhitespaceNodes.get(node.type)) == null ? void 0 : _expandedWhitespaceNo(node, parent);
+  const flag =
+    (_expandedWhitespaceNo = expandedWhitespaceNodes.get(node.type)) == null
+      ? void 0
+      : _expandedWhitespaceNo(node, parent);
   if (typeof flag === "number") {
     return (flag & type) !== 0;
   }
@@ -70,7 +80,9 @@ function needsParens(node, parent, printStack) {
   if (isNewExpression(parent) && parent.callee === node) {
     if (isOrHasCallExpression(node)) return true;
   }
-  return (_expandedParens$get = expandedParens.get(node.type)) == null ? void 0 : _expandedParens$get(node, parent, printStack);
+  return (_expandedParens$get = expandedParens.get(node.type)) == null
+    ? void 0
+    : _expandedParens$get(node, parent, printStack);
 }
 
 //# sourceMappingURL=index.js.map

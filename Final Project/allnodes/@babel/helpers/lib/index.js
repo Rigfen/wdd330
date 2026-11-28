@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 exports.ensure = ensure;
@@ -17,7 +17,7 @@ const {
   cloneNode,
   expressionStatement,
   file,
-  identifier
+  identifier,
 } = _t;
 function makePath(path) {
   const parts = [];
@@ -43,8 +43,13 @@ function getHelperMetadata(file) {
       if (!_helpers.default[name]) {
         throw child.buildCodeFrameError(`Unknown helper ${name}`);
       }
-      if (child.get("specifiers").length !== 1 || !child.get("specifiers.0").isImportDefaultSpecifier()) {
-        throw child.buildCodeFrameError("Helpers can only import a default value");
+      if (
+        child.get("specifiers").length !== 1 ||
+        !child.get("specifiers.0").isImportDefaultSpecifier()
+      ) {
+        throw child.buildCodeFrameError(
+          "Helpers can only import a default value",
+        );
       }
       const bindingIdentifier = child.node.specifiers[0].local;
       dependencies.set(bindingIdentifier, name);
@@ -53,7 +58,9 @@ function getHelperMetadata(file) {
     ExportDefaultDeclaration(child) {
       const decl = child.get("declaration");
       if (!decl.isFunctionDeclaration() || !decl.node.id) {
-        throw decl.buildCodeFrameError("Helpers can only export named function declarations");
+        throw decl.buildCodeFrameError(
+          "Helpers can only export named function declarations",
+        );
       }
       exportName = decl.node.id.name;
       exportPath = makePath(child);
@@ -67,12 +74,12 @@ function getHelperMetadata(file) {
     Statement(child) {
       if (child.isImportDeclaration() || child.isExportDeclaration()) return;
       child.skip();
-    }
+    },
   };
   const referenceVisitor = {
     Program(path) {
       const bindings = path.scope.getAllBindings();
-      Object.keys(bindings).forEach(name => {
+      Object.keys(bindings).forEach((name) => {
         if (name === exportName) return;
         if (dependencies.has(bindings[name].identifier)) return;
         localBindingNames.add(name);
@@ -91,13 +98,15 @@ function getHelperMetadata(file) {
       const left = child.get("left");
       if (!(exportName in left.getBindingIdentifiers())) return;
       if (!left.isIdentifier()) {
-        throw left.buildCodeFrameError("Only simple assignments to exports are allowed in helpers");
+        throw left.buildCodeFrameError(
+          "Only simple assignments to exports are allowed in helpers",
+        );
       }
       const binding = child.scope.getBinding(exportName);
       if (binding != null && binding.scope.path.isProgram()) {
         exportBindingAssignments.push(makePath(child));
       }
-    }
+    },
   };
   (0, _traverse.default)(file.ast, dependencyVisitor, file.scope);
   (0, _traverse.default)(file.ast, referenceVisitor, file.scope);
@@ -111,7 +120,7 @@ function getHelperMetadata(file) {
     exportPath,
     exportName,
     importBindingsReferences,
-    importPaths
+    importPaths,
   };
 }
 function permuteHelperAST(file, metadata, id, localBindings, getDependency) {
@@ -126,16 +135,17 @@ function permuteHelperAST(file, metadata, id, localBindings, getDependency) {
     exportPath,
     exportName,
     importBindingsReferences,
-    importPaths
+    importPaths,
   } = metadata;
   const dependenciesRefs = {};
   dependencies.forEach((name, id) => {
-    dependenciesRefs[id.name] = typeof getDependency === "function" && getDependency(name) || id;
+    dependenciesRefs[id.name] =
+      (typeof getDependency === "function" && getDependency(name)) || id;
   });
   const toRename = {};
   const bindings = new Set(localBindings || []);
   if (id.type === "Identifier") bindings.add(id.name);
-  localBindingNames.forEach(name => {
+  localBindingNames.forEach((name) => {
     let newName = name;
     while (bindings.has(newName)) newName = "_" + newName;
     if (newName !== name) toRename[name] = newName;
@@ -143,26 +153,29 @@ function permuteHelperAST(file, metadata, id, localBindings, getDependency) {
   if (id.type === "Identifier" && exportName !== id.name) {
     toRename[exportName] = id.name;
   }
-  const {
-    path
-  } = file;
+  const { path } = file;
   const exp = path.get(exportPath);
-  const imps = importPaths.map(p => path.get(p));
-  const impsBindingRefs = importBindingsReferences.map(p => path.get(p));
+  const imps = importPaths.map((p) => path.get(p));
+  const impsBindingRefs = importBindingsReferences.map((p) => path.get(p));
   const decl = exp.get("declaration");
   if (id.type === "Identifier") {
     exp.replaceWith(decl);
   } else if (id.type === "MemberExpression") {
-    exportBindingAssignments.forEach(assignPath => {
+    exportBindingAssignments.forEach((assignPath) => {
       const assign = path.get(assignPath);
       assign.replaceWith(assignmentExpression("=", id, assign.node));
     });
     exp.replaceWith(decl);
-    path.pushContainer("body", expressionStatement(assignmentExpression("=", id, identifier(exportName))));
+    path.pushContainer(
+      "body",
+      expressionStatement(
+        assignmentExpression("=", id, identifier(exportName)),
+      ),
+    );
   } else {
     throw new Error("Unexpected helper format.");
   }
-  Object.keys(toRename).forEach(name => {
+  Object.keys(toRename).forEach((name) => {
     path.scope.rename(name, toRename[name]);
   });
   for (const path of imps) path.remove();
@@ -178,7 +191,7 @@ function loadHelper(name) {
     if (!helper) {
       throw Object.assign(new ReferenceError(`Unknown helper ${name}`), {
         code: "BABEL_HELPER_UNKNOWN",
-        helper: name
+        helper: name,
       });
     }
     const fn = () => {
@@ -186,21 +199,24 @@ function loadHelper(name) {
         if (!FileClass) {
           const fakeFile = {
             ast: file(helper.ast()),
-            path: null
+            path: null,
           };
           (0, _traverse.default)(fakeFile.ast, {
-            Program: path => (fakeFile.path = path).stop()
+            Program: (path) => (fakeFile.path = path).stop(),
           });
           return fakeFile;
         }
       }
-      return new FileClass({
-        filename: `babel-helper://${name}`
-      }, {
-        ast: file(helper.ast()),
-        code: "[internal Babel helper code]",
-        inputMap: null
-      });
+      return new FileClass(
+        {
+          filename: `babel-helper://${name}`,
+        },
+        {
+          ast: file(helper.ast()),
+          code: "[internal Babel helper code]",
+          inputMap: null,
+        },
+      );
     };
     let metadata = null;
     helperData[name] = {
@@ -211,13 +227,13 @@ function loadHelper(name) {
         permuteHelperAST(file, metadata, id, localBindings, getDependency);
         return {
           nodes: file.ast.program.body,
-          globals: metadata.globals
+          globals: metadata.globals,
         };
       },
       getDependencies() {
         metadata || (metadata = getHelperMetadata(fn()));
         return Array.from(metadata.dependencies.values());
-      }
+      },
     };
   }
   return helperData[name];
@@ -235,7 +251,9 @@ function ensure(name, newFileClass) {
   FileClass || (FileClass = newFileClass);
   loadHelper(name);
 }
-const list = exports.list = Object.keys(_helpers.default).map(name => name.replace(/^_/, ""));
-var _default = exports.default = get;
+const list = (exports.list = Object.keys(_helpers.default).map((name) =>
+  name.replace(/^_/, ""),
+));
+var _default = (exports.default = get);
 
 //# sourceMappingURL=index.js.map

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.makeStaticFileCache = makeStaticFileCache;
 var _caching = require("../caching.js");

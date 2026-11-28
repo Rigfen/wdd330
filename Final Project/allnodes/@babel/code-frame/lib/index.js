@@ -1,22 +1,45 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.codeFrameColumns = codeFrameColumns;
 exports.default = _default;
 var _highlight = require("@babel/highlight");
 var _chalk = _interopRequireWildcard(require("chalk"), true);
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _getRequireWildcardCache(e) {
+  if ("function" != typeof WeakMap) return null;
+  var r = new WeakMap(),
+    t = new WeakMap();
+  return (_getRequireWildcardCache = function (e) {
+    return e ? t : r;
+  })(e);
+}
+function _interopRequireWildcard(e, r) {
+  if (!r && e && e.__esModule) return e;
+  if (null === e || ("object" != typeof e && "function" != typeof e))
+    return { default: e };
+  var t = _getRequireWildcardCache(r);
+  if (t && t.has(e)) return t.get(e);
+  var n = { __proto__: null },
+    a = Object.defineProperty && Object.getOwnPropertyDescriptor;
+  for (var u in e)
+    if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) {
+      var i = a ? Object.getOwnPropertyDescriptor(e, u) : null;
+      i && (i.get || i.set) ? Object.defineProperty(n, u, i) : (n[u] = e[u]);
+    }
+  return ((n.default = e), t && t.set(e, n), n);
+}
 let chalkWithForcedColor = undefined;
 function getChalk(forceColor) {
   if (forceColor) {
     var _chalkWithForcedColor;
-    (_chalkWithForcedColor = chalkWithForcedColor) != null ? _chalkWithForcedColor : chalkWithForcedColor = new _chalk.default.constructor({
-      enabled: true,
-      level: 1
-    });
+    (_chalkWithForcedColor = chalkWithForcedColor) != null
+      ? _chalkWithForcedColor
+      : (chalkWithForcedColor = new _chalk.default.constructor({
+          enabled: true,
+          level: 1,
+        }));
     return chalkWithForcedColor;
   }
   return _chalk.default;
@@ -26,20 +49,20 @@ function getDefs(chalk) {
   return {
     gutter: chalk.grey,
     marker: chalk.red.bold,
-    message: chalk.red.bold
+    message: chalk.red.bold,
   };
 }
 const NEWLINE = /\r\n|[\n\r\u2028\u2029]/;
 function getMarkerLines(loc, source, opts) {
-  const startLoc = Object.assign({
-    column: 0,
-    line: -1
-  }, loc.start);
+  const startLoc = Object.assign(
+    {
+      column: 0,
+      line: -1,
+    },
+    loc.start,
+  );
   const endLoc = Object.assign({}, startLoc, loc.end);
-  const {
-    linesAbove = 2,
-    linesBelow = 3
-  } = opts || {};
+  const { linesAbove = 2, linesBelow = 3 } = opts || {};
   const startLine = startLoc.line;
   const startColumn = startLoc.column;
   const endLine = endLoc.line;
@@ -83,46 +106,63 @@ function getMarkerLines(loc, source, opts) {
   return {
     start,
     end,
-    markerLines
+    markerLines,
   };
 }
 function codeFrameColumns(rawLines, loc, opts = {}) {
-  const highlighted = (opts.highlightCode || opts.forceColor) && (0, _highlight.shouldHighlight)(opts);
+  const highlighted =
+    (opts.highlightCode || opts.forceColor) &&
+    (0, _highlight.shouldHighlight)(opts);
   const chalk = getChalk(opts.forceColor);
   const defs = getDefs(chalk);
   const maybeHighlight = (chalkFn, string) => {
     return highlighted ? chalkFn(string) : string;
   };
   const lines = rawLines.split(NEWLINE);
-  const {
-    start,
-    end,
-    markerLines
-  } = getMarkerLines(loc, lines, opts);
+  const { start, end, markerLines } = getMarkerLines(loc, lines, opts);
   const hasColumns = loc.start && typeof loc.start.column === "number";
   const numberMaxWidth = String(end).length;
-  const highlightedLines = highlighted ? (0, _highlight.default)(rawLines, opts) : rawLines;
-  let frame = highlightedLines.split(NEWLINE, end).slice(start, end).map((line, index) => {
-    const number = start + 1 + index;
-    const paddedNumber = ` ${number}`.slice(-numberMaxWidth);
-    const gutter = ` ${paddedNumber} |`;
-    const hasMarker = markerLines[number];
-    const lastMarkerLine = !markerLines[number + 1];
-    if (hasMarker) {
-      let markerLine = "";
-      if (Array.isArray(hasMarker)) {
-        const markerSpacing = line.slice(0, Math.max(hasMarker[0] - 1, 0)).replace(/[^\t]/g, " ");
-        const numberOfMarkers = hasMarker[1] || 1;
-        markerLine = ["\n ", maybeHighlight(defs.gutter, gutter.replace(/\d/g, " ")), " ", markerSpacing, maybeHighlight(defs.marker, "^").repeat(numberOfMarkers)].join("");
-        if (lastMarkerLine && opts.message) {
-          markerLine += " " + maybeHighlight(defs.message, opts.message);
+  const highlightedLines = highlighted
+    ? (0, _highlight.default)(rawLines, opts)
+    : rawLines;
+  let frame = highlightedLines
+    .split(NEWLINE, end)
+    .slice(start, end)
+    .map((line, index) => {
+      const number = start + 1 + index;
+      const paddedNumber = ` ${number}`.slice(-numberMaxWidth);
+      const gutter = ` ${paddedNumber} |`;
+      const hasMarker = markerLines[number];
+      const lastMarkerLine = !markerLines[number + 1];
+      if (hasMarker) {
+        let markerLine = "";
+        if (Array.isArray(hasMarker)) {
+          const markerSpacing = line
+            .slice(0, Math.max(hasMarker[0] - 1, 0))
+            .replace(/[^\t]/g, " ");
+          const numberOfMarkers = hasMarker[1] || 1;
+          markerLine = [
+            "\n ",
+            maybeHighlight(defs.gutter, gutter.replace(/\d/g, " ")),
+            " ",
+            markerSpacing,
+            maybeHighlight(defs.marker, "^").repeat(numberOfMarkers),
+          ].join("");
+          if (lastMarkerLine && opts.message) {
+            markerLine += " " + maybeHighlight(defs.message, opts.message);
+          }
         }
+        return [
+          maybeHighlight(defs.marker, ">"),
+          maybeHighlight(defs.gutter, gutter),
+          line.length > 0 ? ` ${line}` : "",
+          markerLine,
+        ].join("");
+      } else {
+        return ` ${maybeHighlight(defs.gutter, gutter)}${line.length > 0 ? ` ${line}` : ""}`;
       }
-      return [maybeHighlight(defs.marker, ">"), maybeHighlight(defs.gutter, gutter), line.length > 0 ? ` ${line}` : "", markerLine].join("");
-    } else {
-      return ` ${maybeHighlight(defs.gutter, gutter)}${line.length > 0 ? ` ${line}` : ""}`;
-    }
-  }).join("\n");
+    })
+    .join("\n");
   if (opts.message && !hasColumns) {
     frame = `${" ".repeat(numberMaxWidth + 1)}${opts.message}\n${frame}`;
   }
@@ -135,7 +175,8 @@ function codeFrameColumns(rawLines, loc, opts = {}) {
 function _default(rawLines, lineNumber, colNumber, opts = {}) {
   if (!deprecationWarningShown) {
     deprecationWarningShown = true;
-    const message = "Passing lineNumber and colNumber is deprecated to @babel/code-frame. Please use `codeFrameColumns`.";
+    const message =
+      "Passing lineNumber and colNumber is deprecated to @babel/code-frame. Please use `codeFrameColumns`.";
     if (process.emitWarning) {
       process.emitWarning(message, "DeprecationWarning");
     } else {
@@ -148,8 +189,8 @@ function _default(rawLines, lineNumber, colNumber, opts = {}) {
   const location = {
     start: {
       column: colNumber,
-      line: lineNumber
-    }
+      line: lineNumber,
+    },
   };
   return codeFrameColumns(rawLines, location, opts);
 }

@@ -1,18 +1,21 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _template = require("@babel/template");
 var _helpersGenerated = require("./helpers-generated.js");
-const helpers = Object.assign({
-  __proto__: null
-}, _helpersGenerated.default);
-var _default = exports.default = helpers;
-const helper = minVersion => tpl => ({
+const helpers = Object.assign(
+  {
+    __proto__: null,
+  },
+  _helpersGenerated.default,
+);
+var _default = (exports.default = helpers);
+const helper = (minVersion) => (tpl) => ({
   minVersion,
-  ast: () => _template.default.program.ast(tpl)
+  ast: () => _template.default.program.ast(tpl),
 });
 {
   helpers.AwaitValue = helper("7.0.0-beta.0")`
